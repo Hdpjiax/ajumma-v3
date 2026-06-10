@@ -26,19 +26,11 @@ function buildWAMessage(d) {
 📝 Notas: ${d.notes || "Sin notas"}`)
 }
 
-/**
- * Calendly pre-fill:
- *  - date   = YYYY-MM-DD  (selects that day automatically)
- *  - name, email, a1, a2, a3  (custom questions)
- * NOTE: Calendly does NOT pre-select a time slot via URL;
- *       the user selects the hour inside Calendly.
- *       We pass preferred hour as custom field a3.
- */
 function buildCalendlyURL(d) {
   const p = new URLSearchParams({
     name:  d.name,
     email: d.email,
-    date:  d.isoDate,          // YYYY-MM-DD → opens that day in Calendly
+    date:  d.isoDate,
     a1:    d.branch,
     a2:    `${d.people} persona(s)`,
     a3:    `Hora preferida: ${d.time}${d.notes ? " | Notas: "+d.notes : ""}`,
@@ -46,7 +38,42 @@ function buildCalendlyURL(d) {
   return `${CALENDLY_URL}?${p.toString()}`
 }
 
-/* ─── Mini Calendar ─────────────────────────────── */
+/* ─── DateInput: compatible Safari ────────────────────────────
+   Safari iOS no muestra el valor interno del input[type=date]
+   cuando está vacío. Usamos un wrapper con label flotante
+   que muestra el placeholder cuando no hay valor.
+*/
+function DateInput({ value, onChange, required }) {
+  return (
+    <div className="safari-date-wrap">
+      <input
+        type="date"
+        required={required}
+        value={value}
+        onChange={onChange}
+        className={value ? "has-value" : ""}
+      />
+      {!value && <span className="safari-date-placeholder">dd / mm / aaaa</span>}
+    </div>
+  )
+}
+
+function TimeInput({ value, onChange, required }) {
+  return (
+    <div className="safari-date-wrap">
+      <input
+        type="time"
+        required={required}
+        value={value}
+        onChange={onChange}
+        className={value ? "has-value" : ""}
+      />
+      {!value && <span className="safari-date-placeholder">— : —</span>}
+    </div>
+  )
+}
+
+/* ─── Mini Calendar ─────────────────────────────────── */
 function MiniCalendar({ selected, onSelect }) {
   const today = new Date(); today.setHours(0,0,0,0)
   const [view, setView] = useState(() => {
@@ -85,7 +112,7 @@ function MiniCalendar({ selected, onSelect }) {
   )
 }
 
-/* ─── Info Bar ──────────────────────────────────────── */
+/* ─── Info Bar ─────────────────────────────────────────── */
 function InfoBar() {
   return (
     <div className="res-info-bar">
@@ -113,7 +140,7 @@ function InfoBar() {
   )
 }
 
-/* ─── Main ───────────────────────────────────────── */
+/* ─── Main ─────────────────────────────────────────────── */
 const EMPTY_WA  = { name:"", phone:"", date:"", time:"", people:"2", branch:"Altozano", notes:"" }
 const EMPTY_CAL = { name:"", email:"", people:"2", branch:"Altozano", notes:"" }
 
@@ -132,7 +159,6 @@ export default function Reservation() {
   const dateLabel = selDate
     ? `${selDate.getDate()} de ${MONTHS_ES[selDate.getMonth()]} ${selDate.getFullYear()}` : ""
 
-  // ISO date for Calendly pre-fill  YYYY-MM-DD
   const isoDate = selDate
     ? `${selDate.getFullYear()}-${pad(selDate.getMonth()+1)}-${pad(selDate.getDate())}` : ""
 
@@ -173,7 +199,6 @@ export default function Reservation() {
           </button>
         </div>
 
-        {/* ══ TAB WHATSAPP ════════════════════════════════ */}
         {tab === "wa" && (
           <div className="res-wa-wrap">
             {waSent ? (
@@ -197,13 +222,19 @@ export default function Reservation() {
                   </div>
                 </div>
                 <div className="form-row">
-                  <div className="field "><label>Fecha</label>
-                    <input className="form-fecha2" style={{height:"3rem"}} type="date" required
-                      value={wa.date} onChange={e=>upWa("date",e.target.value)} placeholder=""/>
+                  <div className="field"><label>Fecha</label>
+                    <DateInput
+                      value={wa.date}
+                      onChange={e => upWa("date", e.target.value)}
+                      required
+                    />
                   </div>
                   <div className="field"><label>Hora</label>
-                    <input  type="time" required style={{height:"3rem"}}
-                      value={wa.time} onChange={e=>upWa("time",e.target.value)}/>
+                    <TimeInput
+                      value={wa.time}
+                      onChange={e => upWa("time", e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
                 <div className="form-row">
@@ -229,7 +260,6 @@ export default function Reservation() {
           </div>
         )}
 
-        {/* ══ TAB CALENDARIO ════════════════════════════ */}
         {tab === "cal" && (
           <div className="res-cal-wrap">
             {calSent ? (
@@ -256,8 +286,6 @@ export default function Reservation() {
               </div>
             ) : (
               <form className="res-cal-form" onSubmit={submitCal}>
-
-                {/* FILA SUPERIOR: Calendario | Horarios */}
                 <div className="cal-top-row">
                   <div className="cal-col-left">
                     <p className="mc-label">📅 Selecciona tu fecha</p>
@@ -266,7 +294,6 @@ export default function Reservation() {
                       <p className="mc-selected-label">Fecha: <strong>{dateLabel}</strong></p>
                     )}
                   </div>
-
                   <div className="cal-col-right">
                     <p className="mc-label">⏰ Selecciona tu hora preferida</p>
                     {selDate ? (
@@ -294,7 +321,6 @@ export default function Reservation() {
                   </div>
                 </div>
 
-                {/* DATOS (aparece cuando hay fecha + hora) */}
                 {selDate && selTime && (
                   <div className="cal-form-row">
                     <div className="cal-form-inner">
@@ -321,18 +347,16 @@ export default function Reservation() {
                           </select>
                         </div>
                         <div className="field" style={{flex:2}}><label>Notas / alergias</label>
-                          <input type="text" placeholder="Cumpleaños, alergia al cmarón..."
+                          <input type="text" placeholder="Cumpleaños, alergia al camaron..."
                             value={cal.notes} onChange={e=>upCal("notes",e.target.value)}/>
                         </div>
                       </div>
-
                       <div className="res-summary">
                         <span>📅 {dateLabel}</span>
                         <span>⏰ {selTime}</span>
                         <span>👥 {cal.people} personas</span>
                         <span>📍 {cal.branch}</span>
                       </div>
-
                       <button type="submit" className="btn btn-red btn-full">
                         Confirmar en nuestro Calendario 📅
                       </button>

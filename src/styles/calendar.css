@@ -2,7 +2,7 @@
    RESERVATION — calendar layout + custom form fields
 ═══════════════════════════════════════════════════════ */
 
-/* ── WA wrapper ────────────────────────────────────── */
+/* ── WA wrapper ────────────────────────────────────────── */
 .res-wa-wrap { max-width: 680px; margin: 0 auto 2.5rem; }
 .res-wa-form {
   background: rgba(255,255,255,.04);
@@ -14,7 +14,7 @@
   gap: 1rem;
 }
 
-/* ── Calendar wrapper ────────────────────────────── */
+/* ── Calendar wrapper ───────────────────────────────── */
 .res-cal-wrap  { margin-bottom: 2.5rem; }
 .res-cal-form  { display: flex; flex-direction: column; gap: 1.5rem; }
 
@@ -52,7 +52,7 @@
 }
 .cal-form-inner { display: flex; flex-direction: column; gap: .9rem; }
 
-/* ── Mini Calendar ────────────────────────────────── */
+/* ── Mini Calendar ─────────────────────────────────── */
 .mc-label {
   font-size: .76rem;
   text-transform: uppercase;
@@ -116,7 +116,7 @@
 }
 .mc-selected-label strong { color: var(--text); }
 
-/* ── Time slots ────────────────────────────────────── */
+/* ── Time slots ────────────────────────────────────────── */
 .time-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .38rem; }
 .time-slot {
   padding: .48rem .2rem; border-radius: 9px;
@@ -130,7 +130,7 @@
   font-weight: 700; box-shadow: 0 3px 10px rgba(192,57,43,.4);
 }
 
-/* ── Resumen dorado ───────────────────────────────── */
+/* ── Resumen dorado ────────────────────────────────────────── */
 .res-summary {
   display: flex; flex-wrap: wrap; gap: .5rem;
   padding: .8rem 1rem;
@@ -139,7 +139,7 @@
 }
 .res-summary span { font-size: .82rem; color: var(--muted); }
 
-/* ── Info bar ───────────────────────────────────────── */
+/* ── Info bar ────────────────────────────────────────────────── */
 .res-info-bar {
   display: flex; align-items: center; flex-wrap: wrap; gap: 1rem;
   padding: 1.4rem 2rem;
@@ -153,12 +153,9 @@
 .rib-divider { width: 1px; align-self: stretch; background: var(--line); flex-shrink: 0; }
 .rib-btns { display: flex; flex-direction: column; gap: .5rem; align-items: flex-start; min-width: 150px; }
 
-/* ════════════════════════════════════════════════════════
-   CUSTOM FORM FIELDS — inputs / selects / textarea
-   Scoped a .reservation para no afectar otras secciones
-════════════════════════════════════════════════════════ */
-
-/* Label */
+/* ═══════════════════════════════════════════════════════
+   CUSTOM FORM FIELDS
+═══════════════════════════════════════════════════════ */
 .reservation .field > label {
   display: block;
   font-size: .72rem;
@@ -169,7 +166,6 @@
   font-weight: 600;
 }
 
-/* Inputs & textarea base */
 .reservation .field input,
 .reservation .field textarea {
   width: 100%;
@@ -185,7 +181,6 @@
   appearance: none;
   -webkit-appearance: none;
   line-height: 1.5;
-  /* fix de color en inputs nativos (date, time) */
   color-scheme: dark;
 }
 .reservation .field input::placeholder,
@@ -198,106 +193,88 @@
   background: rgba(255,255,255,.09);
   box-shadow: 0 0 0 3px rgba(192,57,43,.15);
 }
-.reservation .field input:hover:not(:focus),
-.reservation .field textarea:hover:not(:focus) {
-  border-color: rgba(192,57,43,.4);
-}
 
-/* Textarea */
-.reservation .field textarea {
-  resize: vertical;
-  min-height: 80px;
-}
+.reservation .field textarea { resize: vertical; min-height: 80px; }
 
-/* ── Select personalizado ───────────────────────────────
-   Flecha nativa ocultada, reemplazada por SVG rojo     */
-.reservation .field {
-  position: relative;
-}
 .reservation .field select {
   width: 100%;
   background: rgba(255,255,255,.06);
   color: var(--text);
   border: 1.5px solid rgba(255,255,255,.1);
   border-radius: 14px;
-  /* padding-right grande para que el texto no tape la flecha */
   padding: .82rem 2.8rem .82rem 1rem;
   outline: none;
   font-family: inherit;
   font-size: .92rem;
   cursor: pointer;
   transition: border-color .2s, background .2s, box-shadow .2s;
-  /* Quitar flecha nativa en todos los navegadores */
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  /* Flecha SVG roja */
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c0392b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c0392b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right .9rem center;
   background-size: 16px 16px;
-  /* mantener el bg con la imagen y el color */
   background-color: rgba(255,255,255,.06);
   color-scheme: dark;
   line-height: 1.5;
-}
-.reservation .field select:hover:not(:focus) {
-  border-color: rgba(192,57,43,.45);
-  background-color: rgba(255,255,255,.09);
 }
 .reservation .field select:focus {
   border-color: var(--red);
   background-color: rgba(255,255,255,.09);
   box-shadow: 0 0 0 3px rgba(192,57,43,.15);
 }
-/* Opciones en el dropdown nativo */
-.reservation .field select option {
-  background: #1a1310;
-  color: var(--text);
-  font-size: .9rem;
+.reservation .field select option { background: #1a1310; color: var(--text); }
+
+/* ── Safari date/time placeholder fix ───────────────────────
+   Wrapper relativo + span absoluto que simula el placeholder
+   Solo se muestra cuando el input NO tiene valor (.has-value oculto)
+*/
+.safari-date-wrap {
+  position: relative;
+  width: 100%;
+}
+.safari-date-wrap input[type=date],
+.safari-date-wrap input[type=time] {
+  width: 100%;
+  color: transparent;          /* ocultar texto nativo vacío en Safari */
+  color-scheme: dark;
+}
+.safari-date-wrap input.has-value {
+  color: var(--text);           /* mostrar texto cuando hay valor */
+}
+.safari-date-placeholder {
+  position: absolute;
+  top: 50%; left: 1rem;
+  transform: translateY(-50%);
+  color: rgba(168,152,128,.5);
+  font-size: .92rem;
+  pointer-events: none;         /* no interfiere con clicks al input */
+  user-select: none;
 }
 
-/* ── form-row ─────────────────────────────────────────── */
 .reservation .form-row { display: flex; gap: 1rem; }
 .reservation .form-row .field { flex: 1; }
-
-/* ── form-hint ───────────────────────────────────────── */
-.reservation .form-hint {
-  font-size: .76rem; color: var(--muted);
-  text-align: center; margin-top: -.2rem;
-}
-
-/* ── form-ok ─────────────────────────────────────────── */
+.reservation .form-hint { font-size: .76rem; color: var(--muted); text-align: center; margin-top: -.2rem; }
 .reservation .form-ok {
   text-align: center; padding: 3rem 1.5rem;
-  background: rgba(255,255,255,.04); border: 1px solid var(--line);
-  border-radius: 28px;
+  background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 28px;
 }
 .reservation .form-ok span { font-size: 3.5rem; display: block; margin-bottom: 1rem; }
-.reservation .form-ok h3 {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.6rem; margin-bottom: .5rem; color: var(--text);
-}
+.reservation .form-ok h3 { font-family: "Cormorant Garamond", serif; font-size: 1.6rem; margin-bottom: .5rem; color: var(--text); }
 .reservation .form-ok p { font-size: .9rem; color: var(--muted); }
+.reservation .btn-full { width: 100%; justify-content: center; font-size: .95rem; padding: .95rem 1.5rem; margin-top: .2rem; }
 
-/* ── btn-full ────────────────────────────────═───────── */
-.reservation .btn-full {
-  width: 100%; justify-content: center;
-  font-size: .95rem; padding: .95rem 1.5rem; margin-top: .2rem;
-}
-
-/* ── Responsive ──────────────────────────────────────── */
 @media (max-width: 900px) {
-  .cal-top-row      { grid-template-columns: 1fr; }
+  .cal-top-row { grid-template-columns: 1fr; }
   .time-placeholder { min-height: 80px; }
 }
 @media (max-width: 600px) {
-  .res-wa-form              { padding: 1.2rem; }
-  .cal-form-row             { padding: 1.2rem; }
-  .time-grid                { grid-template-columns: repeat(4, 1fr); }
-  .res-info-bar             { flex-direction: column; align-items: flex-start; }
-  .rib-divider              { width: 100%; height: 1px; align-self: auto; }
-  .rib-btns                 { flex-direction: row; flex-wrap: wrap; }
-  .reservation .form-row    { flex-direction: column; }
+  .res-wa-form { padding: 1.2rem; }
+  .cal-form-row { padding: 1.2rem; }
+  .time-grid { grid-template-columns: repeat(4, 1fr); }
+  .res-info-bar { flex-direction: column; align-items: flex-start; }
+  .rib-divider { width: 100%; height: 1px; align-self: auto; }
+  .rib-btns { flex-direction: row; flex-wrap: wrap; }
+  .reservation .form-row { flex-direction: column; }
 }
