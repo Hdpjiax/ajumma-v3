@@ -1,3 +1,13 @@
+/* ─── Bloquear scroll horizontal global ─── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+#root {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 /* ─── Hero photo ─── */
 .hero { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden; }
 .hero-photo-img {
@@ -16,12 +26,8 @@
   max-width: none;
 }
 
-.amb {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-}
+/* ─── Ambient blobs ─── */
+.amb { position: absolute; border-radius: 50%; pointer-events: none; z-index: 0; }
 .amb1 { width:600px; height:600px; top:-8rem;  left:-10rem; background:rgba(192,57,43,.22); filter:blur(50px); opacity:.85; }
 .amb2 { width:420px; height:420px; top:40vh;  right:-10rem; background:rgba(201,164,74,.16); filter:blur(50px); opacity:.80; }
 .amb3 { width:340px; height:340px; bottom:10vh; left:6vw;   background:rgba(192,57,43,.15); filter:blur(50px); opacity:.70; }
@@ -31,12 +37,6 @@
   .amb1 { width:320px; height:320px; filter:blur(30px); opacity:.6; }
   .amb2 { width:260px; height:260px; filter:blur(30px); opacity:.55; }
   .amb3 { width:220px; height:220px; filter:blur(30px); opacity:.5; }
-
-  /* Burger al extremo derecho:
-     nav-links pasa a position:fixed (fuera del flujo flex)
-     nav-cta es display:none
-     → el burger queda flotando en medio sin empuje.
-     margin-left:auto lo ancla a la derecha del nav. */
   .burger { margin-left: auto !important; }
 }
 
