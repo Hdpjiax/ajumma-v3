@@ -1,0 +1,23 @@
+/* Mobile and responsive fixes for Ajumma V3 */
+
+/* Ensure body and root render properly on mobile */
+html, body { min-height: 100%; overflow-x: hidden; }
+
+/* Fix Notification permission crash on unsupported mobile browsers */
+@supports (not (pointer: fine)) {
+  body { --notification-support: none; }
+}
+
+/* Hamburger menu right aligned on mobile */
+@media (max-width:768px) {
+  .burger { position: fixed; right: 1rem; top: var(--nav); }
+  .nav-links { top: var(--nav); padding: 2rem 1rem; }
+  .nav-links a { font-size: 1rem; }
+  .hero-h1 { font-size: clamp(3rem,12vw,6rem); }
+}
+
+/* Chatbot adjustments */
+.chat-box { width: calc(100vw - 1.5rem); right: 0.75rem; }
+.chat-opts { gap: 0.6rem; }
+.chat-opt { font-size: 0.9rem; padding: 0.65rem 1rem; }
+.chat-foot input { font-size: 0.9rem; padding: 0.65rem 1rem; }
