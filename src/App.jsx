@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import Navbar            from "./components/Navbar"
 import Hero              from "./components/Hero"
 import Marquee           from "./components/Marquee"
@@ -14,29 +13,12 @@ import Footer            from "./components/Footer"
 import Chatbot           from "./components/Chatbot"
 import LazySection       from "./components/LazySection"
 import PushBanner        from "./components/PushNotifications"
+import { useScrollReveal } from "./hooks/useScrollReveal"
+import "./styles/animations.css"
 
 export default function App() {
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible") }),
-      { threshold: 0.08 }
-    )
-    const observe = () => document.querySelectorAll(".fade-up:not(.visible)").forEach(el => io.observe(el))
-    observe()
-    const mo = new MutationObserver(observe)
-    mo.observe(document.getElementById("root"), { childList: true, subtree: true })
-
-    const onScroll = () => {
-      document.querySelectorAll(".parallax").forEach(el => {
-        const rect = el.getBoundingClientRect()
-        const pct  = rect.top / window.innerHeight
-        el.style.transform = `translateY(${pct * 30}px) scale(1.08)`
-      })
-    }
-    window.addEventListener("scroll", onScroll, { passive: true })
-    onScroll()
-    return () => { io.disconnect(); mo.disconnect(); window.removeEventListener("scroll", onScroll) }
-  }, [])
+  // Repeating scroll reveal — removes .visible on exit so it re-animates on scroll back up
+  useScrollReveal()
 
   return (
     <div className="page">
@@ -44,7 +26,6 @@ export default function App() {
       <Navbar/>
       <PushBanner/>
 
-      {/* Secciones siempre en el DOM — destinos de navegación y carga inmediata */}
       <Hero/>
       <Marquee/>
       <Experience/>
@@ -55,7 +36,6 @@ export default function App() {
       <Reviews/>
       <Reservation/>
 
-      {/* Solo estas dos son lazy: no son destinos de nav y son puramente decorativas */}
       <LazySection minHeight="300px"><InstagramStrip/></LazySection>
       <LazySection minHeight="300px"><Footer/></LazySection>
 
