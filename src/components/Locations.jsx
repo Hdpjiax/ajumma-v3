@@ -5,7 +5,7 @@ export default function Locations() {
   ]
 
   // Coordenadas exactas Ajumma Altozano - solo pin, sin rutas
-  const MAP_SRC = "https://maps.google.com/maps?q=19.6878,-101.2048&z=17&output=embed"
+  const MAP_SRC = "https://maps.google.com/maps?q=19.669522,-101.169835&z=17&output=embed"
 
   return (
     <section className="section locations" id="ubicacion">
