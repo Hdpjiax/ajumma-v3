@@ -110,7 +110,7 @@ export default function Hero() {
       </div>
 
       <a href="#experiencia" className="scroll-cue" aria-label="Bajar" onClick={e => scrollTo(e, "experiencia")}>
-        <span>SCROLL</span>
+        <span>Desliza</span>
         <div className="scroll-bar"/>
       </a>
     </section>
