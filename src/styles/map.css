@@ -3,14 +3,14 @@
   border-radius: var(--r);
   overflow: hidden;
   border: 1px solid var(--line);
-  min-height: 460px;
+  min-height: 490px;
   background: var(--bg2);
   position: relative;
 }
 .map-inner {
   position: relative;
   width: 100%;
-  min-height: 460px;
+  min-height: 560px;
   border-radius: var(--r);
   overflow: hidden;
   background: var(--bg2);
