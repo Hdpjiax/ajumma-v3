@@ -1,4 +1,3 @@
-
 import { useRef, useEffect } from "react"
 import { GALLERY } from "../data/content"
 
@@ -6,46 +5,27 @@ export default function Gallery() {
   const trackRef = useRef(null)
   const rafRef   = useRef(null)
   const posRef   = useRef(0)
-  const pauseRef = useRef(false)
 
   useEffect(() => {
     const track = trackRef.current
     if (!track) return
 
-    // After mount, measure one "set" width and auto-scroll
-    const speed = 0.55   // px per frame  (~33px/s at 60fps)
+    const speed = 0.55  // px per frame
 
     const animate = () => {
-      if (!pauseRef.current) {
-        posRef.current += speed
-        // When we've scrolled exactly one full set, reset to 0 (seamless loop)
-        const setWidth = track.scrollWidth / 2
-        if (posRef.current >= setWidth) posRef.current = 0
-        track.style.transform = `translateX(-${posRef.current}px)`
-      }
+      posRef.current += speed
+      const setWidth = track.scrollWidth / 2
+      if (posRef.current >= setWidth) posRef.current = 0
+      track.style.transform = `translateX(-${posRef.current}px)`
       rafRef.current = requestAnimationFrame(animate)
     }
 
     rafRef.current = requestAnimationFrame(animate)
 
-    // Pause on hover/touch
-    const pause  = () => { pauseRef.current = true }
-    const resume = () => { pauseRef.current = false }
-    track.addEventListener("mouseenter", pause)
-    track.addEventListener("mouseleave", resume)
-    track.addEventListener("touchstart",  pause, { passive: true })
-    track.addEventListener("touchend",    resume)
-
-    return () => {
-      cancelAnimationFrame(rafRef.current)
-      track.removeEventListener("mouseenter", pause)
-      track.removeEventListener("mouseleave", resume)
-      track.removeEventListener("touchstart",  pause)
-      track.removeEventListener("touchend",    resume)
-    }
+    return () => cancelAnimationFrame(rafRef.current)
+    // No pause on hover — carousel runs continuously
   }, [])
 
-  // Duplicate gallery items so the loop is truly seamless
   const doubled = [...GALLERY, ...GALLERY]
 
   return (
@@ -57,7 +37,6 @@ export default function Gallery() {
         </h2>
       </div>
 
-      {/* Outer wrapper: clips overflow, no scrollbar, no whitespace */}
       <div className="gallery-outer">
         <div className="gallery-track-wrap">
           <div className="gallery-track" ref={trackRef}>

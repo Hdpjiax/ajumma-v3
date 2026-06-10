@@ -11,6 +11,8 @@ const HOURS     = ["13:00","13:30","14:00","14:30","15:00","15:30",
                    "19:00","19:30","20:00","20:30","21:00","21:30",
                    "22:00","22:30"]
 
+function pad(n) { return String(n).padStart(2,"0") }
+
 function buildWAMessage(d) {
   return encodeURIComponent(
 `🍽️ *Nueva Reserva — AJUMMA*
@@ -24,13 +26,27 @@ function buildWAMessage(d) {
 📝 Notas: ${d.notes || "Sin notas"}`)
 }
 
+/**
+ * Calendly pre-fill:
+ *  - date   = YYYY-MM-DD  (selects that day automatically)
+ *  - name, email, a1, a2, a3  (custom questions)
+ * NOTE: Calendly does NOT pre-select a time slot via URL;
+ *       the user selects the hour inside Calendly.
+ *       We pass preferred hour as custom field a3.
+ */
 function buildCalendlyURL(d) {
-  const p = new URLSearchParams({ name: d.name, email: d.email,
-    a1: d.branch, a2: `${d.people} persona(s)`, a3: d.notes || "" })
+  const p = new URLSearchParams({
+    name:  d.name,
+    email: d.email,
+    date:  d.isoDate,          // YYYY-MM-DD → opens that day in Calendly
+    a1:    d.branch,
+    a2:    `${d.people} persona(s)`,
+    a3:    `Hora preferida: ${d.time}${d.notes ? " | Notas: "+d.notes : ""}`,
+  })
   return `${CALENDLY_URL}?${p.toString()}`
 }
 
-/* ─── Mini Calendar ─────────────────────────────────── */
+/* ─── Mini Calendar ─────────────────────────────── */
 function MiniCalendar({ selected, onSelect }) {
   const today = new Date(); today.setHours(0,0,0,0)
   const [view, setView] = useState(() => {
@@ -69,7 +85,7 @@ function MiniCalendar({ selected, onSelect }) {
   )
 }
 
-/* ─── Info Bar (shared) ─────────────────────────────── */
+/* ─── Info Bar ──────────────────────────────────────── */
 function InfoBar() {
   return (
     <div className="res-info-bar">
@@ -97,16 +113,14 @@ function InfoBar() {
   )
 }
 
-/* ─── Main ──────────────────────────────────────────── */
+/* ─── Main ───────────────────────────────────────── */
 const EMPTY_WA  = { name:"", phone:"", date:"", time:"", people:"2", branch:"Altozano", notes:"" }
 const EMPTY_CAL = { name:"", email:"", people:"2", branch:"Altozano", notes:"" }
 
 export default function Reservation() {
   const [tab,     setTab]     = useState("wa")
-  /* WA form */
   const [wa,      setWa]      = useState(EMPTY_WA)
   const [waSent,  setWaSent]  = useState(false)
-  /* Calendly form */
   const [cal,     setCal]     = useState(EMPTY_CAL)
   const [selDate, setSelDate] = useState(null)
   const [selTime, setSelTime] = useState("")
@@ -118,9 +132,12 @@ export default function Reservation() {
   const dateLabel = selDate
     ? `${selDate.getDate()} de ${MONTHS_ES[selDate.getMonth()]} ${selDate.getFullYear()}` : ""
 
+  // ISO date for Calendly pre-fill  YYYY-MM-DD
+  const isoDate = selDate
+    ? `${selDate.getFullYear()}-${pad(selDate.getMonth()+1)}-${pad(selDate.getDate())}` : ""
+
   const switchTab = (t) => {
-    setTab(t)
-    setWaSent(false); setCalSent(false)
+    setTab(t); setWaSent(false); setCalSent(false)
     setSelDate(null); setSelTime("")
   }
 
@@ -129,10 +146,11 @@ export default function Reservation() {
     window.open(`https://wa.me/${WA_NUMBER}?text=${buildWAMessage(wa)}`, "_blank")
     setWaSent(true)
   }
+
   const submitCal = (e) => {
     e.preventDefault()
     if (!selDate || !selTime) return
-    window.open(buildCalendlyURL(cal), "_blank")
+    window.open(buildCalendlyURL({ ...cal, dateLabel, time: selTime, isoDate }), "_blank")
     setCalSent(true)
   }
 
@@ -140,14 +158,12 @@ export default function Reservation() {
     <section className="section reservation" id="reserva">
       <div className="container">
 
-        {/* Header */}
         <p className="eyebrow red fade-up">RESERVACIONES</p>
         <div className="res-top fade-up d1">
           <h2>Agenda tu <em>experiencia</em></h2>
           <p className="res-intro">Elige fecha, hora y método. Confirmamos en menos de 30 min.</p>
         </div>
 
-        {/* Tabs */}
         <div className="res-tabs fade-up d2">
           <button className={`res-tab ${tab==="wa"?"active":""}`} onClick={()=>switchTab("wa")}>
             💬 WhatsApp rápido
@@ -219,13 +235,23 @@ export default function Reservation() {
             {calSent ? (
               <div className="form-ok">
                 <span>📅</span>
-                <h3>¡Se abrió el calendario!</h3>
-                <p style={{marginBottom:"1.2rem"}}>Selecciona la hora en la pestaña abierta. Te confirmaremos por correo.</p>
+                <h3>¡Listo! El calendario se abrió</h3>
+                <p style={{marginBottom:".4rem"}}>
+                  Tu fecha <strong style={{color:"var(--text)"}}>{dateLabel}</strong> y hora preferida
+                  <strong style={{color:"var(--text)"}}> {selTime}</strong> ya están pre-llenados.
+                </p>
+                <p style={{marginBottom:"1.4rem",fontSize:".82rem"}}>
+                  Confirma haciendo clic en el horario disponible más cercano a tu preferencia.
+                </p>
                 <div style={{display:"flex",gap:".8rem",flexWrap:"wrap",justifyContent:"center"}}>
                   <button className="btn btn-red"
-                    onClick={()=>window.open(buildCalendlyURL(cal),"_blank")}>Abrir de nuevo →</button>
+                    onClick={()=>window.open(buildCalendlyURL({...cal,dateLabel,time:selTime,isoDate}),"_blank")}>
+                    Abrir de nuevo →
+                  </button>
                   <button className="btn btn-outline-light"
-                    onClick={()=>{ setCalSent(false); setCal(EMPTY_CAL); setSelDate(null); setSelTime("") }}>Modificar</button>
+                    onClick={()=>{ setCalSent(false); setCal(EMPTY_CAL); setSelDate(null); setSelTime("") }}>
+                    Modificar
+                  </button>
                 </div>
               </div>
             ) : (
@@ -233,7 +259,6 @@ export default function Reservation() {
 
                 {/* FILA SUPERIOR: Calendario | Horarios */}
                 <div className="cal-top-row">
-                  {/* Izquierda: calendario */}
                   <div className="cal-col-left">
                     <p className="mc-label">📅 Selecciona tu fecha</p>
                     <MiniCalendar selected={selDate} onSelect={(d)=>{ setSelDate(d); setSelTime("") }}/>
@@ -242,9 +267,8 @@ export default function Reservation() {
                     )}
                   </div>
 
-                  {/* Derecha: horarios */}
                   <div className="cal-col-right">
-                    <p className="mc-label">⏰ Selecciona tu hora</p>
+                    <p className="mc-label">⏰ Selecciona tu hora preferida</p>
                     {selDate ? (
                       <div className="time-grid">
                         {HOURS.map(h=>(
@@ -261,13 +285,16 @@ export default function Reservation() {
                     )}
                     {selTime && (
                       <p className="mc-selected-label" style={{marginTop:".6rem"}}>
-                        Hora: <strong>{selTime}</strong>
+                        Hora preferida: <strong>{selTime}</strong>
+                        <span style={{fontSize:".72rem",color:"var(--muted)",display:"block",marginTop:".2rem"}}>
+                          Podrás confirmar el slot exacto en el calendario
+                        </span>
                       </p>
                     )}
                   </div>
                 </div>
 
-                {/* FILA INFERIOR: Formulario (aparece cuando hay fecha + hora) */}
+                {/* DATOS (aparece cuando hay fecha + hora) */}
                 {selDate && selTime && (
                   <div className="cal-form-row">
                     <div className="cal-form-inner">
@@ -294,12 +321,11 @@ export default function Reservation() {
                           </select>
                         </div>
                         <div className="field" style={{flex:2}}><label>Notas / alergias</label>
-                          <input type="text" placeholder="Cumpleaños, alergia al camaron..."
+                          <input type="text" placeholder="Cumpleaños, alergia al cmarón..."
                             value={cal.notes} onChange={e=>upCal("notes",e.target.value)}/>
                         </div>
                       </div>
 
-                      {/* Resumen */}
                       <div className="res-summary">
                         <span>📅 {dateLabel}</span>
                         <span>⏰ {selTime}</span>
@@ -310,19 +336,18 @@ export default function Reservation() {
                       <button type="submit" className="btn btn-red btn-full">
                         Confirmar en nuestro Calendario 📅
                       </button>
-                      <p className="form-hint">Se abrirá el calendario con tus datos listos. Solo confirma.</p>
+                      <p className="form-hint">
+                        Abriremos el calendario con tu fecha y datos pre-llenados. Solo elige el slot final.
+                      </p>
                     </div>
                   </div>
                 )}
-
               </form>
             )}
           </div>
         )}
 
-        {/* Info bar compartida */}
         <InfoBar />
-
       </div>
     </section>
   )
