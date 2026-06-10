@@ -8,13 +8,11 @@
   object-position: center;
   z-index: 0;
   pointer-events: none;
-  /* Forzar nitidez — evita que el browser escale mal en retina */
   image-rendering: auto;
-  -webkit-transform: translateZ(0);  /* Safari GPU layer propio */
+  -webkit-transform: translateZ(0);
   transform: translateZ(0);
-  will-change: auto;                 /* sin will-change = no degrada calidad */
-  filter: none !important;           /* asegura que ninguna regla padre aplique blur */
-  /* Sin max-width: global.css pone max-width:100% en img, lo sobreescribimos */
+  will-change: auto;
+  filter: none !important;
   max-width: none;
 }
 
@@ -34,6 +32,13 @@
   .amb1 { width:320px; height:320px; filter:blur(30px); opacity:.6; }
   .amb2 { width:260px; height:260px; filter:blur(30px); opacity:.55; }
   .amb3 { width:220px; height:220px; filter:blur(30px); opacity:.5; }
+
+  /* Burger al extremo derecho:
+     nav-links pasa a position:fixed (fuera del flujo flex)
+     nav-cta es display:none
+     → el burger queda flotando en medio sin empuje.
+     margin-left:auto lo ancla a la derecha del nav. */
+  .burger { margin-left: auto !important; }
 }
 
 /* ─── iOS Safari smooth scroll ─── */
