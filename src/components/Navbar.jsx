@@ -1,26 +1,40 @@
 import { useState, useEffect } from "react"
 import { NAV } from "../data/content"
 
+// Scroll robusto: espera a que el elemento exista en el DOM
+// (compatible con LazySection que renderiza secciones on-demand)
+function scrollToId(id, attempt = 0) {
+  const el = document.getElementById(id)
+  if (el) {
+    const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--nav") || "72")
+    const top = el.getBoundingClientRect().top + window.scrollY - navH
+    window.scrollTo({ top, behavior: "smooth" })
+  } else if (attempt < 8) {
+    // El elemento aún no fue montado por LazySection — esperar y reintentar
+    setTimeout(() => scrollToId(id, attempt + 1), 120)
+  }
+}
+
 export default function Navbar() {
   const [solid, setSolid] = useState(false)
   const [open, setOpen]   = useState(false)
 
   useEffect(() => {
     const fn = () => setSolid(window.scrollY > 50)
-    window.addEventListener("scroll", fn, { passive:true })
+    window.addEventListener("scroll", fn, { passive: true })
     fn()
     return () => window.removeEventListener("scroll", fn)
   }, [])
 
   const close = () => setOpen(false)
 
-  // Smooth scroll to section
   const handleNav = (e, href) => {
     e.preventDefault()
     close()
     const id = href.replace("#", "")
-    const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" })
+    // Forzar render de LazySection haciendo un scroll previo al área
+    // y luego resolver el elemento
+    scrollToId(id)
   }
 
   return (
@@ -47,9 +61,15 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <a href="#reserva" className="btn btn-red nav-cta" onClick={e => handleNav(e, "#reserva")}>RESERVAR MESA 🗓</a>
+        <a href="#reserva" className="btn btn-red nav-cta" onClick={e => handleNav(e, "#reserva")}>
+          RESERVAR MESA 🗓
+        </a>
 
-        <button className={`burger ${open ? "open" : ""}`} onClick={() => setOpen(o => !o)} aria-label="Menú">
+        <button
+          className={`burger ${open ? "open" : ""}`}
+          onClick={() => setOpen(o => !o)}
+          aria-label="Menú"
+        >
           <span/><span/><span/>
         </button>
       </header>
