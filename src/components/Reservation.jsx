@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
-const WA_NUMBER = "524433862070"
+const WA_NUMBER    = "524433862070"
 const CALENDLY_URL = "https://calendly.com/garia350/new-meeting"
 
 function buildWAMessage(data) {
@@ -17,50 +17,57 @@ function buildWAMessage(data) {
   )
 }
 
-// Carga el SDK de Calendly de forma dinámica
-function useCalendlySDK() {
-  const [ready, setReady] = useState(false)
-  useEffect(() => {
-    if (window.Calendly) { setReady(true); return }
-    const link = document.createElement("link")
-    link.rel  = "stylesheet"
-    link.href = "https://assets.calendly.com/assets/external/widget.css"
-    document.head.appendChild(link)
-
-    const script = document.createElement("script")
-    script.src   = "https://assets.calendly.com/assets/external/widget.js"
-    script.async = true
-    script.onload = () => setReady(true)
-    document.head.appendChild(script)
-
-    return () => { /* scripts quedan cargados globalmente */ }
-  }, [])
-  return ready
-}
-
 export default function Reservation() {
   const [tab, setTab]   = useState("form")
   const [form, setForm] = useState({ name:"", phone:"", date:"", time:"", people:"2", branch:"Altozano", notes:"" })
   const [sent, setSent] = useState(false)
-  const calendlyReady   = useCalendlySDK()
+  const inlineRef = useRef(null)
 
   const update = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
   const submit = (e) => {
     e.preventDefault()
-    const msg = buildWAMessage(form)
-    window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, "_blank")
+    window.open(`https://wa.me/${WA_NUMBER}?text=${buildWAMessage(form)}`, "_blank")
     setSent(true)
   }
 
-  // Abrir Calendly como popup (no iframe) — evita problemas de cookies/storage
-  const openCalendly = () => {
-    if (window.Calendly) {
-      window.Calendly.initPopupWidget({ url: CALENDLY_URL })
-    } else {
-      window.open(CALENDLY_URL, "_blank")
+  // Cuando el tab cambia a "calendly", inicializar el widget inline
+  useEffect(() => {
+    if (tab !== "calendly") return
+    if (!inlineRef.current) return
+
+    // Limpiar contenido previo
+    inlineRef.current.innerHTML = ""
+
+    const tryInit = (attempts = 0) => {
+      if (window.Calendly) {
+        window.Calendly.initInlineWidget({
+          url: CALENDLY_URL,
+          parentElement: inlineRef.current,
+          prefill: {},
+          utm: {},
+        })
+      } else if (attempts < 20) {
+        // SDK aún no cargó — reintentar hasta 2 segundos
+        setTimeout(() => tryInit(attempts + 1), 100)
+      } else {
+        // Fallback: mostrar botón de nueva pestaña
+        if (inlineRef.current) {
+          inlineRef.current.innerHTML = `
+            <div style="text-align:center;padding:2rem">
+              <p style="color:#a89880;margin-bottom:1rem">No se pudo cargar el calendario automáticamente.</p>
+              <a href="${CALENDLY_URL}" target="_blank" rel="noreferrer"
+                 style="display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.6rem;
+                        background:#c0392b;color:#fff;border-radius:999px;font-weight:700;text-decoration:none">
+                📅 Abrir Calendly →
+              </a>
+            </div>`
+        }
+      }
     }
-  }
+
+    tryInit()
+  }, [tab])
 
   return (
     <section className="section reservation" id="reserva">
@@ -71,7 +78,6 @@ export default function Reservation() {
           <p className="res-intro">Elige el método que prefieras. Confirmamos en menos de 30 minutos.</p>
         </div>
 
-        {/* Tab switcher */}
         <div className="res-tabs fade-up d2">
           <button className={`res-tab ${tab==="form"?"active":""}`} onClick={()=>{setTab("form"); setSent(false)}}>
             💬 WhatsApp rápido
@@ -83,16 +89,13 @@ export default function Reservation() {
 
         {tab === "form" ? (
           <div className="res-grid fade-up d3">
-            {/* Formulario — order 1 en móvil */}
             <div className="res-right">
               {sent ? (
                 <div className="form-ok">
                   <span>✅</span>
                   <h3>¡Mensaje enviado a WhatsApp!</h3>
                   <p>Revisa tu app de WhatsApp. Confirmamos en menos de 30 minutos.</p>
-                  <button className="btn btn-red" style={{marginTop:"1rem"}} onClick={()=>setSent(false)}>
-                    Nueva reserva
-                  </button>
+                  <button className="btn btn-red" style={{marginTop:"1rem"}} onClick={()=>setSent(false)}>Nueva reserva</button>
                 </div>
               ) : (
                 <form className="res-form" onSubmit={submit}>
@@ -135,72 +138,47 @@ export default function Reservation() {
               )}
             </div>
 
-            {/* Info — order 2 en móvil */}
             <div className="res-left">
               <div className="res-badge">
                 <span>🔥</span>
-                <div>
-                  <strong>Buffet Viernes</strong>
-                  <p>$349 por persona · Come todo lo que quieras</p>
-                </div>
+                <div><strong>Buffet Viernes</strong><p>$349 por persona · Come todo lo que quieras</p></div>
               </div>
               <div className="res-contact">
-                <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer" className="btn btn-red">
-                  💬 WhatsApp directo
-                </a>
+                <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer" className="btn btn-red">💬 WhatsApp directo</a>
                 <a href="tel:4433862070" className="btn btn-outline-light">📞 443 386 2070</a>
               </div>
               <div className="res-hours">
-                <h4>⏰ Horarios</h4>
-                <p>Lunes – Domingo: 1:00 PM – 11:00 PM</p>
-                <h4 style={{marginTop:"1rem"}}>📍 Sucursales</h4>
-                <p>Altozano · Las Camelinas</p>
+                <h4>⏰ Horarios</h4><p>Lunes – Domingo: 1:00 PM – 11:00 PM</p>
+                <h4 style={{marginTop:"1rem"}}>📍 Sucursales</h4><p>Altozano · Las Camelinas</p>
               </div>
             </div>
           </div>
         ) : (
-          /* ─── CALENDLY TAB ────────────────────────────────── */
+          /* ─── CALENDLY TAB ────────────────────────────── */
           <div className="calendly-section fade-up d3">
-            <div className="calendly-cta-box">
-              <div className="cal-icon">📅</div>
-              <h3>Agenda tu reserva en Calendly</h3>
-              <p>Elige el día y hora que más te convengan. Rápido y sin llamadas.</p>
-              <button
-                className="btn btn-red btn-cal-open"
-                onClick={openCalendly}
-                disabled={!calendlyReady}
-              >
-                {calendlyReady ? "📅 Abrir Calendly" : "Cargando..."}
-              </button>
-              <a
-                href={CALENDLY_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="btn-link cal-fallback"
-              >
-                O haz clic aquí para abrir en nueva pestaña →
-              </a>
+            {/* Widget inline — se inicializa al cambiar al tab */}
+            <div className="calendly-wrap-dark">
+              <div
+                ref={inlineRef}
+                className="calendly-inline-container"
+              />
+              <p className="calendly-note">
+                ¿Problemas? <a href={CALENDLY_URL} target="_blank" rel="noreferrer">Abre Calendly directamente →</a>
+              </p>
             </div>
 
             <div className="calendly-info-row">
               <div className="res-badge">
                 <span>🔥</span>
-                <div>
-                  <strong>Buffet Viernes</strong>
-                  <p>$349 por persona · Come todo lo que quieras</p>
-                </div>
+                <div><strong>Buffet Viernes</strong><p>$349 por persona · Come todo lo que quieras</p></div>
               </div>
               <div className="res-contact-row">
-                <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer" className="btn btn-red">
-                  💬 WhatsApp directo
-                </a>
+                <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer" className="btn btn-red">💬 WhatsApp directo</a>
                 <a href="tel:4433862070" className="btn btn-outline-light">📞 443 386 2070</a>
               </div>
               <div className="res-hours">
-                <h4>⏰ Horarios</h4>
-                <p>Lunes – Domingo: 1:00 PM – 11:00 PM</p>
-                <h4 style={{marginTop:"1rem"}}>📍 Sucursales</h4>
-                <p>Altozano · Las Camelinas</p>
+                <h4>⏰ Horarios</h4><p>Lunes – Domingo: 1:00 PM – 11:00 PM</p>
+                <h4 style={{marginTop:"1rem"}}>📍 Sucursales</h4><p>Altozano · Las Camelinas</p>
               </div>
             </div>
           </div>

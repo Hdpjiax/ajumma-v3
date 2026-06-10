@@ -14,11 +14,15 @@
   <meta property="og:type"        content="restaurant"/>
   <meta property="og:locale"      content="es_MX"/>
 
-  <!-- Preload critical above-fold assets (hero bg + fonts) -->
+  <!-- Preload critical above-fold assets -->
   <link rel="preload" as="image" href="/imgs/food-sushi-roll.webp" fetchpriority="high"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet"/>
+
+  <!-- Calendly SDK — cargado aquí para estar disponible desde el inicio -->
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet"/>
+  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
   <!-- Schema.org Restaurant structured data -->
   <script type="application/ld+json">
