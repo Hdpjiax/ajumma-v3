@@ -10,7 +10,6 @@ import Locations       from "./components/Locations"
 import Reviews         from "./components/Reviews"
 import Reservation     from "./components/Reservation"
 import ErrorBoundary   from "./components/ErrorBoundary"
-import PushBanner      from "./components/PushNotifications"
 import { useScrollReveal } from "./hooks/useScrollReveal"
 import "./styles/animations.css"
 
@@ -25,7 +24,6 @@ export default function App() {
       <div className="page">
         <div className="amb amb1"/><div className="amb amb2"/><div className="amb amb3"/>
         <Navbar/>
-        <ErrorBoundary><PushBanner/></ErrorBoundary>
         <Hero/>
         <Marquee/>
         <Experience/>
