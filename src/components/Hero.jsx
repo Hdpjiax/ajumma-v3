@@ -17,49 +17,45 @@ export default function Hero() {
     let H = canvas.height = canvas.offsetHeight
     let raf, running = true
 
-    // ── Particle config per device ──────────────────────
-    const COUNT       = mobile ? 18 : 38
-    const CONN_DIST   = mobile ? 0  : 140   // connection line distance (0 = off on mobile)
-    const GLOW_RADIUS = mobile ? 6  : 14    // glow halo radius
+    const COUNT     = mobile ? 18 : 38
+    const CONN_DIST = mobile ? 0  : 130
+    const GLOW_R    = mobile ? 5  : 12
 
-    // Color palette: gold + ember red
     const COLORS = [
-      [201, 164,  74],  // gold
-      [201, 164,  74],  // gold (weighted)
-      [220, 130,  40],  // amber
-      [192,  57,  43],  // red ember
-      [255, 200, 100],  // bright spark
+      [201, 164,  74],
+      [201, 164,  74],
+      [220, 130,  40],
+      [192,  57,  43],
+      [255, 200, 100],
     ]
 
-    // ── Particle factory ────────────────────────────────
     function mkParticle(fromBottom = false) {
       const col = COLORS[Math.floor(Math.random() * COLORS.length)]
       return {
         x:    Math.random() * W,
         y:    fromBottom ? H + 10 : Math.random() * H,
-        r:    Math.random() * (mobile ? 1.6 : 2.4) + 0.6,
-        vx:   (Math.random() - 0.5) * (mobile ? 0.3 : 0.5),
-        vy:   -(Math.random() * 0.6 + 0.2),   // always drifts upward (ember)
+        r:    Math.random() * (mobile ? 1.5 : 2.2) + 0.5,
+        vx:   (Math.random() - 0.5) * (mobile ? 0.28 : 0.45),
+        vy:   -(Math.random() * 0.55 + 0.18),
         a:    Math.random() * Math.PI * 2,
-        da:   (Math.random() * 0.008 + 0.003) * (Math.random() < 0.5 ? 1 : -1),
-        life: Math.random(),                   // 0-1 phase
+        da:   (Math.random() * 0.007 + 0.003) * (Math.random() < 0.5 ? 1 : -1),
+        life: Math.random(),
         col,
-        trail: [],                             // last N positions
+        trail: [],
       }
     }
 
     let particles = Array.from({ length: COUNT }, () => mkParticle())
 
-    // ── Helpers ─────────────────────────────────────────
-    function rgba([r,g,b], a) { return `rgba(${r},${g},${b},${a})` }
+    function rgba([r,g,b], a) { return `rgba(${r},${g},${b},${a.toFixed(3)})` }
 
     function drawGlow(x, y, r, col, alpha) {
-      const grad = ctx.createRadialGradient(x, y, 0, x, y, GLOW_RADIUS * r)
-      grad.addColorStop(0,   rgba(col, alpha * 0.9))
-      grad.addColorStop(0.4, rgba(col, alpha * 0.4))
+      const grad = ctx.createRadialGradient(x, y, 0, x, y, GLOW_R * r)
+      grad.addColorStop(0,   rgba(col, alpha * 0.85))
+      grad.addColorStop(0.4, rgba(col, alpha * 0.35))
       grad.addColorStop(1,   rgba(col, 0))
       ctx.beginPath()
-      ctx.arc(x, y, GLOW_RADIUS * r, 0, Math.PI * 2)
+      ctx.arc(x, y, GLOW_R * r, 0, Math.PI * 2)
       ctx.fillStyle = grad
       ctx.fill()
     }
@@ -74,25 +70,23 @@ export default function Hero() {
     function drawTrail(trail, col) {
       if (trail.length < 2) return
       for (let i = 1; i < trail.length; i++) {
-        const a = (i / trail.length) * 0.25
+        const a = (i / trail.length) * 0.22
         ctx.beginPath()
         ctx.moveTo(trail[i-1].x, trail[i-1].y)
-        ctx.lineTo(trail[i].x, trail[i].y)
+        ctx.lineTo(trail[i].x,   trail[i].y)
         ctx.strokeStyle = rgba(col, a)
-        ctx.lineWidth = 0.8
+        ctx.lineWidth = 0.7
         ctx.stroke()
       }
     }
 
-    // ── Main loop ────────────────────────────────────────
     function draw() {
       if (!running) return
 
-      // Fade trail instead of full clear — gives motion blur feel
-      ctx.fillStyle = "rgba(8,6,4,0.18)"
-      ctx.fillRect(0, 0, W, H)
+      // CLEAR completamente — el canvas es transparente, la imagen se ve debajo
+      ctx.clearRect(0, 0, W, H)
 
-      // ── Connection lines (desktop only) ─────────────
+      // Líneas de conexión (desktop)
       if (CONN_DIST > 0) {
         for (let i = 0; i < particles.length; i++) {
           for (let j = i + 1; j < particles.length; j++) {
@@ -100,31 +94,27 @@ export default function Hero() {
             const dy = particles[i].y - particles[j].y
             const dist = Math.sqrt(dx*dx + dy*dy)
             if (dist < CONN_DIST) {
-              const a = (1 - dist / CONN_DIST) * 0.12
               ctx.beginPath()
               ctx.moveTo(particles[i].x, particles[i].y)
               ctx.lineTo(particles[j].x, particles[j].y)
-              ctx.strokeStyle = `rgba(201,164,74,${a})`
-              ctx.lineWidth = 0.6
+              ctx.strokeStyle = `rgba(201,164,74,${((1 - dist / CONN_DIST) * 0.1).toFixed(3)})`
+              ctx.lineWidth = 0.5
               ctx.stroke()
             }
           }
         }
       }
 
-      // ── Particles ───────────────────────────────────
+      // Partículas
       particles.forEach((p, idx) => {
-        // Update position
-        p.x += p.vx + Math.sin(p.a * 0.7) * 0.18  // gentle wobble
+        p.x += p.vx + Math.sin(p.a * 0.7) * 0.15
         p.y += p.vy
         p.a += p.da
         p.life += 0.004
 
-        // Trail
         p.trail.push({ x: p.x, y: p.y })
-        if (p.trail.length > 10) p.trail.shift()
+        if (p.trail.length > 8) p.trail.shift()
 
-        // Wrap horizontal, respawn from bottom when off top
         if (p.x < -10) p.x = W + 10
         if (p.x > W + 10) p.x = -10
         if (p.y < -20) {
@@ -132,12 +122,11 @@ export default function Hero() {
           return
         }
 
-        // Pulse alpha via sine on life phase
-        const pulse = Math.sin(p.life * Math.PI * 2) * 0.35 + 0.65
+        const pulse = Math.sin(p.life * Math.PI * 2) * 0.3 + 0.7
         const alpha = Math.min(pulse, 1)
 
         drawTrail(p.trail, p.col)
-        drawGlow(p.x, p.y, p.r, p.col, alpha * 0.55)
+        drawGlow(p.x, p.y, p.r, p.col, alpha * 0.5)
         drawCore(p.x, p.y, p.r, p.col, alpha)
       })
 
