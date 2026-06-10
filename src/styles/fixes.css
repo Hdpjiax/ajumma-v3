@@ -10,24 +10,44 @@
   pointer-events: none;
 }
 
-/* ─── Ambient blobs: reduce blur drastically for Safari GPU ─── */
-/* Safari struggles with filter:blur > 40px on fixed elements   */
+/* ─── Ambient blobs ───
+   - position:absolute (no fixed) para que no dispare recomposición en scroll
+   - blur reducido a 50px: visualmente igual, GPU más tranquila
+   - sin will-change: evita layer explosion en iOS
+*/
 .amb {
-  position: fixed;
+  position: absolute;
   border-radius: 50%;
-  filter: blur(60px);      /* was 120px — 60px is still soft, 5x faster */
   pointer-events: none;
   z-index: 0;
-  opacity: .6;
-  /* Do NOT use will-change here — causes layer explosion on iOS */
 }
-.amb1 { width:500px; height:500px; top:-10rem; left:-8rem;  background:rgba(192,57,43,.18); }
-.amb2 { width:380px; height:380px; top:40vh;  right:-10rem; background:rgba(201,164,74,.14); }
-.amb3 { width:320px; height:320px; bottom:10vh; left:6vw;   background:rgba(192,57,43,.12); }
+.amb1 {
+  width: 600px; height: 600px;
+  top: -8rem; left: -10rem;
+  background: rgba(192,57,43,.22);
+  filter: blur(50px);
+  opacity: .85;
+}
+.amb2 {
+  width: 420px; height: 420px;
+  top: 40vh; right: -10rem;
+  background: rgba(201,164,74,.16);
+  filter: blur(50px);
+  opacity: .8;
+}
+.amb3 {
+  width: 340px; height: 340px;
+  bottom: 10vh; left: 6vw;
+  background: rgba(192,57,43,.15);
+  filter: blur(50px);
+  opacity: .7;
+}
 
-/* ─── Mobile: hide blobs entirely to avoid GPU thrash ─── */
+/* Móvil: blur más pequeño + opacidad menor, pero sigue visible */
 @media (max-width: 768px) {
-  .amb { display: none; }
+  .amb1 { width:320px; height:320px; filter:blur(30px); opacity:.6; }
+  .amb2 { width:260px; height:260px; filter:blur(30px); opacity:.55; }
+  .amb3 { width:220px; height:220px; filter:blur(30px); opacity:.5; }
 }
 
 /* ─── iOS Safari: smooth scroll fix ─── */
