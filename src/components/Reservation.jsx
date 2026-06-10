@@ -197,12 +197,12 @@ export default function Reservation() {
                   </div>
                 </div>
                 <div className="form-row">
-                  <div className="field"><label>Fecha</label>
-                    <input type="date" required
-                      value={wa.date} onChange={e=>upWa("date",e.target.value)}/>
+                  <div className="field "><label>Fecha</label>
+                    <input className="form-fecha2" style={{height:"3rem"}} type="date" required
+                      value={wa.date} onChange={e=>upWa("date",e.target.value)} placeholder=""/>
                   </div>
                   <div className="field"><label>Hora</label>
-                    <input type="time" required
+                    <input  type="time" required style={{height:"3rem"}}
                       value={wa.time} onChange={e=>upWa("time",e.target.value)}/>
                   </div>
                 </div>
