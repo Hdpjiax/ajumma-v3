@@ -4,7 +4,6 @@ import react from "@vitejs/plugin-react"
 export default defineConfig({
   plugins: [react()],
   build: {
-    // Split vendor JS from app JS → better cache reuse
     rollupOptions: {
       output: {
         manualChunks: {
@@ -12,13 +11,13 @@ export default defineConfig({
         },
       },
     },
-    // Inline tiny assets (<4KB) as base64 to save round-trips
     assetsInlineLimit: 4096,
-    // Enable CSS code splitting
-    cssCodeSplit: true,
-    // Minify with esbuild (default, fastest)
+    // cssCodeSplit: false => un solo CSS bundle, evita pantalla blanca
+    // en movil cuando los chunks CSS llegan fuera de orden
+    cssCodeSplit: false,
     minify: "esbuild",
+    // Subir limite de warning de chunks (el bundle es intencionalmente grande)
+    chunkSizeWarningLimit: 800,
   },
-  // Serve .webp files correctly in dev
   assetsInclude: ["**/*.webp"],
 })

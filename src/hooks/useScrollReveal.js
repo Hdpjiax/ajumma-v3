@@ -3,14 +3,14 @@ import { useEffect } from "react"
 /**
  * useScrollReveal
  * ----------------
- * Observes ALL elements with class `fade-up` (and `fade-left`, `fade-right`,
- * `scale-in`, `blur-in`) and toggles `.visible` when they enter/leave the
- * viewport. Because we do NOT call `unobserve`, elements animate every time
- * they re-enter the viewport (scroll down AND back up).
+ * Versión segura para móvil:
+ * - Sin MutationObserver (causaba lag en móvil)
+ * - Quita .visible al salir para que la animación se repita al volver a subir
+ * - Re-escanea en resize por si React renderiza más elementos
  */
 export function useScrollReveal() {
   useEffect(() => {
-    const SELECTORS = ".fade-up, .fade-left, .fade-right, .scale-in, .blur-in, .stagger-item"
+    const SELECTOR = ".fade-up, .fade-left, .fade-right, .scale-in, .blur-in, .stagger-item"
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -18,29 +18,27 @@ export function useScrollReveal() {
           if (entry.isIntersecting) {
             entry.target.classList.add("visible")
           } else {
-            // Remove .visible so the animation replays on next entry
             entry.target.classList.remove("visible")
           }
         })
       },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.1, rootMargin: "0px 0px -30px 0px" }
     )
 
-    // Observe elements already in DOM
-    document.querySelectorAll(SELECTORS).forEach(el => io.observe(el))
+    const observe = () =>
+      document.querySelectorAll(SELECTOR).forEach(el => io.observe(el))
 
-    // Re-observe when DOM changes (e.g. React renders new content)
-    const mo = new MutationObserver(() => {
-      document.querySelectorAll(SELECTORS).forEach(el => {
-        // Only observe elements not yet tracked
-        if (!el.dataset.observed) {
-          el.dataset.observed = "1"
-          io.observe(el)
-        }
-      })
-    })
-    mo.observe(document.body, { childList: true, subtree: true })
+    observe()
 
-    return () => { io.disconnect(); mo.disconnect() }
+    // Re-escanear 500ms y 1500ms despues del mount
+    // cubre el caso donde React renderiza componentes lazy despues del primer paint
+    const t1 = setTimeout(observe, 500)
+    const t2 = setTimeout(observe, 1500)
+
+    return () => {
+      io.disconnect()
+      clearTimeout(t1)
+      clearTimeout(t2)
+    }
   }, [])
 }
