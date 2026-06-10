@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Página no encontrada — AJUMMA</title>
+  <meta name="theme-color" content="#0a0806"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:   #0a0806;
+      --bg2:  #110e0b;
+      --red:  #c0392b;
+      --gold: #c9a44a;
+      --text: #f0ebe4;
+      --muted:#8a7f74;
+      --line: rgba(255,255,255,.08);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      overflow: hidden;
+    }
+
+    /* Ambient blobs */
+    .amb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: .35;
+    }
+    .amb1 { width: 500px; height: 500px; background: radial-gradient(circle, #c0392b44, transparent 70%); top: -120px; right: -100px; }
+    .amb2 { width: 400px; height: 400px; background: radial-gradient(circle, #c9a44a22, transparent 70%); bottom: -80px; left: -80px; }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 540px;
+      animation: fadeUp .7s cubic-bezier(.34,1.56,.64,1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .eyebrow {
+      font-size: .75rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1rem;
+      animation: fadeUp .6s .1s cubic-bezier(.34,1.56,.64,1) both;
+    }
+
+    .code {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(6rem, 20vw, 10rem);
+      font-weight: 600;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--gold), var(--red));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .5rem;
+      animation: fadeUp .6s .15s cubic-bezier(.34,1.56,.64,1) both;
+    }
+
+    .kr {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--gold);
+      opacity: .7;
+      margin-bottom: 1.5rem;
+      animation: fadeUp .6s .2s cubic-bezier(.34,1.56,.64,1) both;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      animation: fadeUp .6s .25s cubic-bezier(.34,1.56,.64,1) both;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: .97rem;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      animation: fadeUp .6s .3s cubic-bezier(.34,1.56,.64,1) both;
+    }
+
+    .btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp .6s .35s cubic-bezier(.34,1.56,.64,1) both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .75rem 1.75rem;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s;
+    }
+    .btn:hover { transform: translateY(-3px) scale(1.04); }
+
+    .btn-red {
+      background: var(--red);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(192,57,43,.35);
+    }
+    .btn-red:hover { box-shadow: 0 8px 28px rgba(192,57,43,.5); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 2rem auto;
+      animation: fadeUp .6s .4s both;
+    }
+
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .85rem;
+      color: var(--muted);
+      letter-spacing: .15em;
+      animation: fadeUp .6s .45s both;
+    }
+  </style>
+</head>
+<body>
+  <div class="amb amb1"></div>
+  <div class="amb amb2"></div>
+
+  <div class="wrap">
+    <p class="eyebrow">Error 404</p>
+    <div class="code">404</div>
+    <p class="kr">방황하셨습니까 — Te perdiste</p>
+    <h1>Esta página no existe</h1>
+    <p>Parece que la URL que buscas no está en nuestro menú.<br/>Pero nuestro Korean BBQ sí te está esperando.</p>
+
+    <div class="btns">
+      <a href="/" class="btn btn-red">&#x2190; Volver al inicio</a>
+      <a href="/#reserva" class="btn btn-outline">&#x1F5D3; Reservar mesa</a>
+    </div>
+
+    <div class="divider"></div>
+    <p class="brand">AJUMMA — Korean BBQ &amp; Sushi · Morelia</p>
+  </div>
+</body>
+</html>
