@@ -81,7 +81,7 @@ p  { color:var(--muted); line-height:1.75; }
 /* Social sidebar */
 .nav-social {
   display:flex; flex-direction:column; gap:.7rem; position:fixed; left:1.2rem;
-  top:50%; transform:translateY(-50%); z-index:101;
+  top:30%; transform:translateY(30%); z-index:101;
 }
 .nav-social a {
   width:32px; height:32px; display:flex; align-items:center; justify-content:center;
