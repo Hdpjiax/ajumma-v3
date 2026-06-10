@@ -12,11 +12,9 @@ export default defineConfig({
       },
     },
     assetsInlineLimit: 4096,
-    // cssCodeSplit: false => un solo CSS bundle, evita pantalla blanca
-    // en movil cuando los chunks CSS llegan fuera de orden
-    cssCodeSplit: false,
+    cssCodeSplit: true,   // CSS por chunk = menos CSS en el primer load
     minify: "esbuild",
-    // Subir limite de warning de chunks (el bundle es intencionalmente grande)
+    target: "es2015",
     chunkSizeWarningLimit: 800,
   },
   assetsInclude: ["**/*.webp"],

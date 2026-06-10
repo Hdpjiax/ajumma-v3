@@ -8,9 +8,7 @@ export default function Hero() {
   const canvasRef = useRef(null)
 
   useEffect(() => {
-    // En movil desactivamos el canvas completamente para no bloquear el hilo
     if (isMobile()) return
-
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext("2d")
@@ -19,13 +17,11 @@ export default function Hero() {
     let raf
     let running = true
 
-    // Reducido a 35 puntos (antes 60) y sin lineas entre puntos (O(n) en lugar de O(n2))
-    const DOTS = Array.from({ length: 35 }, () => ({
-      x: Math.random() * W,
-      y: Math.random() * H,
-      r: Math.random() * 1.6 + 0.3,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
+    const DOTS = Array.from({ length: 25 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.4 + 0.2,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
       a: Math.random(),
     }))
 
@@ -34,12 +30,10 @@ export default function Hero() {
       ctx.clearRect(0, 0, W, H)
       DOTS.forEach(d => {
         d.x += d.vx; d.y += d.vy
-        if (d.x < 0) d.x = W
-        if (d.x > W) d.x = 0
-        if (d.y < 0) d.y = H
-        if (d.y > H) d.y = 0
-        d.a += 0.007
-        const alpha = (Math.sin(d.a) * 0.5 + 0.5) * 0.6 + 0.1
+        if (d.x < 0) d.x = W; if (d.x > W) d.x = 0
+        if (d.y < 0) d.y = H; if (d.y > H) d.y = 0
+        d.a += 0.006
+        const alpha = (Math.sin(d.a) * 0.5 + 0.5) * 0.5 + 0.1
         ctx.beginPath()
         ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2)
         ctx.fillStyle = `rgba(201,164,74,${alpha})`
@@ -48,7 +42,8 @@ export default function Hero() {
       raf = requestAnimationFrame(draw)
     }
 
-    draw()
+    // Defer canvas start by 300ms so hero paint is not blocked
+    const t = setTimeout(() => draw(), 300)
 
     const onResize = () => {
       W = canvas.width  = canvas.offsetWidth
@@ -57,6 +52,7 @@ export default function Hero() {
     window.addEventListener("resize", onResize, { passive: true })
     return () => {
       running = false
+      clearTimeout(t)
       cancelAnimationFrame(raf)
       window.removeEventListener("resize", onResize)
     }
@@ -69,11 +65,22 @@ export default function Hero() {
 
   return (
     <section className="hero" id="hero">
-      <div className="hero-photo"/>
+      {/* webp first, jpg fallback via CSS custom property */}
+      <picture>
+        <source srcSet="/imgs/food-sushi-roll.webp" type="image/webp" />
+        <img
+          src="/imgs/food-sushi-roll.jpg"
+          alt=""
+          aria-hidden="true"
+          className="hero-photo-img"
+          fetchPriority="high"
+          decoding="sync"
+        />
+      </picture>
       <div className="hero-overlay"/>
       <canvas ref={canvasRef} className="hero-canvas" aria-hidden="true"/>
       <div className="embers" aria-hidden="true">
-        {[...Array(16)].map((_,i) => <span key={i} className="ember" style={{"--i":i}}/>)}
+        {[...Array(12)].map((_,i) => <span key={i} className="ember" style={{"--i":i}}/>)}
       </div>
 
       <div className="container hero-content">
