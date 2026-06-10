@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react"
 import { NAV } from "../data/content"
 
-// Scroll robusto: espera a que el elemento exista en el DOM
-// (compatible con LazySection que renderiza secciones on-demand)
-function scrollToId(id, attempt = 0) {
+function scrollToId(id) {
+  const navH = 72
   const el = document.getElementById(id)
-  if (el) {
-    const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--nav") || "72")
-    const top = el.getBoundingClientRect().top + window.scrollY - navH
-    window.scrollTo({ top, behavior: "smooth" })
-  } else if (attempt < 8) {
-    // El elemento aún no fue montado por LazySection — esperar y reintentar
-    setTimeout(() => scrollToId(id, attempt + 1), 120)
-  }
+  if (!el) return
+  const top = el.getBoundingClientRect().top + window.scrollY - navH
+  window.scrollTo({ top, behavior: "smooth" })
 }
 
 export default function Navbar() {
@@ -31,10 +25,7 @@ export default function Navbar() {
   const handleNav = (e, href) => {
     e.preventDefault()
     close()
-    const id = href.replace("#", "")
-    // Forzar render de LazySection haciendo un scroll previo al área
-    // y luego resolver el elemento
-    scrollToId(id)
+    scrollToId(href.replace("#", ""))
   }
 
   return (

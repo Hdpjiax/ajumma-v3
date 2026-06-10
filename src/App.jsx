@@ -1,4 +1,3 @@
-
 import { useEffect } from "react"
 import Navbar            from "./components/Navbar"
 import Hero              from "./components/Hero"
@@ -44,17 +43,22 @@ export default function App() {
       <div className="amb amb1"/><div className="amb amb2"/><div className="amb amb3"/>
       <Navbar/>
       <PushBanner/>
+
+      {/* Secciones siempre en el DOM — destinos de navegación y carga inmediata */}
       <Hero/>
       <Marquee/>
-      <LazySection minHeight="500px"><Experience/></LazySection>
-      <LazySection minHeight="600px"><Menu/></LazySection>
-      <LazySection minHeight="500px"><Tasting/></LazySection>
-      <LazySection minHeight="460px"><Gallery/></LazySection>
-      <LazySection minHeight="500px"><Locations/></LazySection>
-      <LazySection minHeight="400px"><Reviews/></LazySection>
+      <Experience/>
+      <Menu/>
+      <Tasting/>
+      <Gallery/>
+      <Locations/>
+      <Reviews/>
+      <Reservation/>
+
+      {/* Solo estas dos son lazy: no son destinos de nav y son puramente decorativas */}
       <LazySection minHeight="300px"><InstagramStrip/></LazySection>
-      <LazySection minHeight="420px"><Reservation/></LazySection>
       <LazySection minHeight="300px"><Footer/></LazySection>
+
       <Chatbot/>
     </div>
   )
