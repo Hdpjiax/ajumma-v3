@@ -12,6 +12,7 @@ import Reservation     from "./components/Reservation"
 import ErrorBoundary   from "./components/ErrorBoundary"
 import { useScrollReveal } from "./hooks/useScrollReveal"
 import "./styles/animations.css"
+import FAQ from "./components/FAQ"
 
 const InstagramStrip = lazy(() => import("./components/InstagramStrip"))
 const Footer         = lazy(() => import("./components/Footer"))
@@ -32,6 +33,7 @@ export default function App() {
         <Gallery/>
         <Locations/>
         <Reviews/>
+        <FAQ/>
         <Reservation/>
         <Suspense fallback={null}>
           <ErrorBoundary><InstagramStrip/></ErrorBoundary>
