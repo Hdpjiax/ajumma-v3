@@ -136,7 +136,7 @@ export default function Reservation() {
             ) : (
               <div className="calendly-wrap">
                 <iframe
-                  src="https://calendly.com/ajumma-reservas/mesa"
+                  src="https://calendly.com/garia350/new-meeting"
                   title="Reservar en Calendly"
                   frameBorder="0"
                   scrolling="yes"
