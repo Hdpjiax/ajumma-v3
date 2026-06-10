@@ -88,7 +88,7 @@ export default function Reservation() {
         </div>
 
         {tab === "form" ? (
-          <div className="res-grid fade-up d3">
+          <div className="res-grid d3">
             <div className="res-right">
               {sent ? (
                 <div className="form-ok">
@@ -155,7 +155,7 @@ export default function Reservation() {
           </div>
         ) : (
           /* ─── CALENDLY TAB ────────────────────────────── */
-          <div className="calendly-section fade-up d3">
+          <div className="calendly-section d3">
             {/* Widget inline — se inicializa al cambiar al tab */}
             <div className="calendly-wrap-dark">
               <div
