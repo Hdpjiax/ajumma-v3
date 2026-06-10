@@ -8,42 +8,143 @@ export default function Hero() {
   const canvasRef = useRef(null)
 
   useEffect(() => {
-    if (isMobile()) return
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext("2d")
+    const mobile = isMobile()
+
     let W = canvas.width  = canvas.offsetWidth
     let H = canvas.height = canvas.offsetHeight
-    let raf
-    let running = true
+    let raf, running = true
 
-    const DOTS = Array.from({ length: 25 }, () => ({
-      x: Math.random() * W, y: Math.random() * H,
-      r: Math.random() * 1.4 + 0.2,
-      vx: (Math.random() - 0.5) * 0.25,
-      vy: (Math.random() - 0.5) * 0.25,
-      a: Math.random(),
-    }))
+    // ── Particle config per device ──────────────────────
+    const COUNT       = mobile ? 18 : 38
+    const CONN_DIST   = mobile ? 0  : 140   // connection line distance (0 = off on mobile)
+    const GLOW_RADIUS = mobile ? 6  : 14    // glow halo radius
 
+    // Color palette: gold + ember red
+    const COLORS = [
+      [201, 164,  74],  // gold
+      [201, 164,  74],  // gold (weighted)
+      [220, 130,  40],  // amber
+      [192,  57,  43],  // red ember
+      [255, 200, 100],  // bright spark
+    ]
+
+    // ── Particle factory ────────────────────────────────
+    function mkParticle(fromBottom = false) {
+      const col = COLORS[Math.floor(Math.random() * COLORS.length)]
+      return {
+        x:    Math.random() * W,
+        y:    fromBottom ? H + 10 : Math.random() * H,
+        r:    Math.random() * (mobile ? 1.6 : 2.4) + 0.6,
+        vx:   (Math.random() - 0.5) * (mobile ? 0.3 : 0.5),
+        vy:   -(Math.random() * 0.6 + 0.2),   // always drifts upward (ember)
+        a:    Math.random() * Math.PI * 2,
+        da:   (Math.random() * 0.008 + 0.003) * (Math.random() < 0.5 ? 1 : -1),
+        life: Math.random(),                   // 0-1 phase
+        col,
+        trail: [],                             // last N positions
+      }
+    }
+
+    let particles = Array.from({ length: COUNT }, () => mkParticle())
+
+    // ── Helpers ─────────────────────────────────────────
+    function rgba([r,g,b], a) { return `rgba(${r},${g},${b},${a})` }
+
+    function drawGlow(x, y, r, col, alpha) {
+      const grad = ctx.createRadialGradient(x, y, 0, x, y, GLOW_RADIUS * r)
+      grad.addColorStop(0,   rgba(col, alpha * 0.9))
+      grad.addColorStop(0.4, rgba(col, alpha * 0.4))
+      grad.addColorStop(1,   rgba(col, 0))
+      ctx.beginPath()
+      ctx.arc(x, y, GLOW_RADIUS * r, 0, Math.PI * 2)
+      ctx.fillStyle = grad
+      ctx.fill()
+    }
+
+    function drawCore(x, y, r, col, alpha) {
+      ctx.beginPath()
+      ctx.arc(x, y, r, 0, Math.PI * 2)
+      ctx.fillStyle = rgba(col, alpha)
+      ctx.fill()
+    }
+
+    function drawTrail(trail, col) {
+      if (trail.length < 2) return
+      for (let i = 1; i < trail.length; i++) {
+        const a = (i / trail.length) * 0.25
+        ctx.beginPath()
+        ctx.moveTo(trail[i-1].x, trail[i-1].y)
+        ctx.lineTo(trail[i].x, trail[i].y)
+        ctx.strokeStyle = rgba(col, a)
+        ctx.lineWidth = 0.8
+        ctx.stroke()
+      }
+    }
+
+    // ── Main loop ────────────────────────────────────────
     function draw() {
       if (!running) return
-      ctx.clearRect(0, 0, W, H)
-      DOTS.forEach(d => {
-        d.x += d.vx; d.y += d.vy
-        if (d.x < 0) d.x = W; if (d.x > W) d.x = 0
-        if (d.y < 0) d.y = H; if (d.y > H) d.y = 0
-        d.a += 0.006
-        const alpha = (Math.sin(d.a) * 0.5 + 0.5) * 0.5 + 0.1
-        ctx.beginPath()
-        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(201,164,74,${alpha})`
-        ctx.fill()
+
+      // Fade trail instead of full clear — gives motion blur feel
+      ctx.fillStyle = "rgba(8,6,4,0.18)"
+      ctx.fillRect(0, 0, W, H)
+
+      // ── Connection lines (desktop only) ─────────────
+      if (CONN_DIST > 0) {
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x
+            const dy = particles[i].y - particles[j].y
+            const dist = Math.sqrt(dx*dx + dy*dy)
+            if (dist < CONN_DIST) {
+              const a = (1 - dist / CONN_DIST) * 0.12
+              ctx.beginPath()
+              ctx.moveTo(particles[i].x, particles[i].y)
+              ctx.lineTo(particles[j].x, particles[j].y)
+              ctx.strokeStyle = `rgba(201,164,74,${a})`
+              ctx.lineWidth = 0.6
+              ctx.stroke()
+            }
+          }
+        }
+      }
+
+      // ── Particles ───────────────────────────────────
+      particles.forEach((p, idx) => {
+        // Update position
+        p.x += p.vx + Math.sin(p.a * 0.7) * 0.18  // gentle wobble
+        p.y += p.vy
+        p.a += p.da
+        p.life += 0.004
+
+        // Trail
+        p.trail.push({ x: p.x, y: p.y })
+        if (p.trail.length > 10) p.trail.shift()
+
+        // Wrap horizontal, respawn from bottom when off top
+        if (p.x < -10) p.x = W + 10
+        if (p.x > W + 10) p.x = -10
+        if (p.y < -20) {
+          particles[idx] = mkParticle(true)
+          return
+        }
+
+        // Pulse alpha via sine on life phase
+        const pulse = Math.sin(p.life * Math.PI * 2) * 0.35 + 0.65
+        const alpha = Math.min(pulse, 1)
+
+        drawTrail(p.trail, p.col)
+        drawGlow(p.x, p.y, p.r, p.col, alpha * 0.55)
+        drawCore(p.x, p.y, p.r, p.col, alpha)
       })
+
       raf = requestAnimationFrame(draw)
     }
 
-    // Defer canvas start by 300ms so hero paint is not blocked
-    const t = setTimeout(() => draw(), 300)
+    const t = setTimeout(() => draw(), 200)
 
     const onResize = () => {
       W = canvas.width  = canvas.offsetWidth
@@ -65,7 +166,6 @@ export default function Hero() {
 
   return (
     <section className="hero" id="hero">
-      {/* webp first, jpg fallback via CSS custom property */}
       <picture>
         <source srcSet="/imgs/food-sushi-roll.webp" type="image/webp" />
         <img
