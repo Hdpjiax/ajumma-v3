@@ -928,3 +928,25 @@ img {
 .push-text strong { display: block; font-size: .92rem; margin-bottom: .15rem; }
 .push-text p      { font-size: .78rem; color: var(--muted); }
 .push-actions { display: flex; gap: .6rem; }
+/* GALLERY — CSS animation, siempre fluido */
+.gallery-track--auto {
+  display: flex;
+  width: max-content;
+  animation: galleryScroll 14s linear infinite;
+  will-change: transform;
+}
+
+@keyframes galleryScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-30%); }
+}
+
+@media (min-width: 769px) {
+  .gallery-track--auto {
+    animation-duration: 22s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-track--auto { animation-play-state: paused; }
+}
