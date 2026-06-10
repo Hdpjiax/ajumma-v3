@@ -1,0 +1,63 @@
+/* MAP WRAPPER */
+.loc-map {
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  min-height: 460px;
+  background: var(--bg2);
+  position: relative;
+}
+.map-inner {
+  position: relative;
+  width: 100%;
+  min-height: 460px;
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--bg2);
+}
+.map-inner iframe {
+  width: 100%;
+  height: 460px;
+  border: 0;
+  display: block;
+  /* Convierte el mapa blanco a tono oscuro que combina con la pagina */
+  filter: invert(90%) hue-rotate(180deg) saturate(0.65) brightness(0.88) contrast(1.05);
+}
+/* Badge de ubicacion flotante sobre el mapa */
+.map-overlay {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  width: calc(100% - 2rem);
+  pointer-events: none;
+}
+.map-badge {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  background: rgba(10,8,6,.92);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: .75rem 1rem;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 32px rgba(0,0,0,.6);
+  pointer-events: auto;
+  flex-wrap: wrap;
+}
+.map-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+  animation: mapPulse 2s ease-in-out infinite;
+}
+@keyframes mapPulse {
+  0%,100% { box-shadow: 0 0 0 4px rgba(192,57,43,.25); }
+  50%      { box-shadow: 0 0 0 9px rgba(192,57,43,.08); }
+}
+.map-badge strong { display:block; font-size:.88rem; color:var(--text); }
+.map-badge p      { font-size:.76rem; color:var(--muted); margin:0; }
+.map-badge .btn   { margin-left:auto; flex-shrink:0; }
