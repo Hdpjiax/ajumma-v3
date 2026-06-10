@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 
 const WA_NUMBER = "524433862070"
@@ -18,7 +17,7 @@ function buildWAMessage(data) {
 }
 
 export default function Reservation() {
-  const [tab, setTab]   = useState("form")   // "form" | "calendly"
+  const [tab, setTab]   = useState("form")
   const [form, setForm] = useState({ name:"", phone:"", date:"", time:"", people:"2", branch:"Altozano", notes:"" })
   const [sent, setSent] = useState(false)
 
@@ -42,7 +41,7 @@ export default function Reservation() {
 
         {/* Tab switcher */}
         <div className="res-tabs fade-up d2">
-          <button className={`res-tab ${tab==="form"?"active":""}`}     onClick={()=>{setTab("form"); setSent(false)}}>
+          <button className={`res-tab ${tab==="form"?"active":""}`} onClick={()=>{setTab("form"); setSent(false)}}>
             💬 WhatsApp rápido
           </button>
           <button className={`res-tab ${tab==="calendly"?"active":""}`} onClick={()=>setTab("calendly")}>
@@ -50,34 +49,11 @@ export default function Reservation() {
           </button>
         </div>
 
-        <div className="res-grid">
-          {/* LEFT — Info */}
-          <div className="res-left fade-up d2">
-            <div className="res-badge">
-              <span>🔥</span>
-              <div>
-                <strong>Buffet Viernes</strong>
-                <p>$349 por persona · Come todo lo que quieras</p>
-              </div>
-            </div>
-            <div className="res-contact">
-              <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer" className="btn btn-red">
-                💬 WhatsApp directo
-              </a>
-              <a href="tel:4433862070" className="btn btn-outline-light">📞 443 386 2070</a>
-            </div>
-            <div className="res-hours">
-              <h4>⏰ Horarios</h4>
-              <p>Lunes – Domingo: 1:00 PM – 11:00 PM</p>
-              <h4 style={{marginTop:"1rem"}}>📍 Sucursales</h4>
-              <p>Altozano · Las Camelinas</p>
-            </div>
-          </div>
-
-          {/* RIGHT — Form or Calendly */}
-          <div className="res-right fade-up d3">
-            {tab === "form" ? (
-              sent ? (
+        {tab === "form" ? (
+          <div className="res-grid fade-up d3">
+            {/* RIGHT — Form (shown first on mobile so form is visible) */}
+            <div className="res-right">
+              {sent ? (
                 <div className="form-ok">
                   <span>✅</span>
                   <h3>¡Mensaje enviado a WhatsApp!</h3>
@@ -132,23 +108,72 @@ export default function Reservation() {
                   </button>
                   <p className="form-hint">Se abrirá WhatsApp con todos los datos listos para enviar.</p>
                 </form>
-              )
-            ) : (
-              <div className="calendly-wrap">
-                <iframe
-                  src="https://calendly.com/garia350/new-meeting"
-                  title="Reservar en Calendly"
-                  frameBorder="0"
-                  scrolling="yes"
-                  allow="payment"
-                />
-                <p className="calendly-note">
-                  ¿No carga? <a href="https://calendly.com" target="_blank" rel="noreferrer">Abre Calendly directamente →</a>
-                </p>
+              )}
+            </div>
+
+            {/* LEFT — Info (below form on mobile) */}
+            <div className="res-left">
+              <div className="res-badge">
+                <span>🔥</span>
+                <div>
+                  <strong>Buffet Viernes</strong>
+                  <p>$349 por persona · Come todo lo que quieras</p>
+                </div>
               </div>
-            )}
+              <div className="res-contact">
+                <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer" className="btn btn-red">
+                  💬 WhatsApp directo
+                </a>
+                <a href="tel:4433862070" className="btn btn-outline-light">📞 443 386 2070</a>
+              </div>
+              <div className="res-hours">
+                <h4>⏰ Horarios</h4>
+                <p>Lunes – Domingo: 1:00 PM – 11:00 PM</p>
+                <h4 style={{marginTop:"1rem"}}>📍 Sucursales</h4>
+                <p>Altozano · Las Camelinas</p>
+              </div>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="calendly-section fade-up d3">
+            <div className="calendly-wrap-dark">
+              <iframe
+                src="https://calendly.com/garia350/new-meeting?background_color=100d0a&text_color=f4ece0&primary_color=c0392b"
+                title="Reservar en Calendly"
+                frameBorder="0"
+                scrolling="yes"
+                allow="payment"
+                style={{width:"100%", height:"680px", border:"none"}}
+              />
+              <p className="calendly-note">
+                ¿No carga? <a href="https://calendly.com" target="_blank" rel="noreferrer">Abre Calendly directamente →</a>
+              </p>
+            </div>
+
+            {/* Info below Calendly on mobile */}
+            <div className="calendly-info-row">
+              <div className="res-badge">
+                <span>🔥</span>
+                <div>
+                  <strong>Buffet Viernes</strong>
+                  <p>$349 por persona · Come todo lo que quieras</p>
+                </div>
+              </div>
+              <div className="res-contact-row">
+                <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer" className="btn btn-red">
+                  💬 WhatsApp directo
+                </a>
+                <a href="tel:4433862070" className="btn btn-outline-light">📞 443 386 2070</a>
+              </div>
+              <div className="res-hours">
+                <h4>⏰ Horarios</h4>
+                <p>Lunes – Domingo: 1:00 PM – 11:00 PM</p>
+                <h4 style={{marginTop:"1rem"}}>📍 Sucursales</h4>
+                <p>Altozano · Las Camelinas</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )
