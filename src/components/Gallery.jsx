@@ -3,14 +3,15 @@ import { GALLERY } from "../data/content"
 
 export default function Gallery() {
   const trackRef = useRef(null)
-  const rafRef   = useRef(null)
-  const posRef   = useRef(0)
+  const rafRef = useRef(null)
+  const posRef = useRef(0)
 
   useEffect(() => {
     const track = trackRef.current
     if (!track) return
 
-    const speed = 0.55  // px per frame
+    const isMobile = window.matchMedia("(max-width: 768px)").matches
+    const speed = isMobile ? 1.4 : 0.9
 
     const animate = () => {
       posRef.current += speed
@@ -33,7 +34,7 @@ export default function Gallery() {
       <div className="container">
         <p className="eyebrow red fade-up">AMBIENTE QUE ENAMORA</p>
         <h2 className="fade-up d1">
-          La experiencia<br/><em>en imágenes</em>
+          La experiencia<br /><em>en imágenes</em>
         </h2>
       </div>
 
@@ -42,15 +43,15 @@ export default function Gallery() {
           <div className="gallery-track" ref={trackRef}>
             {doubled.map((src, i) => (
               <div key={i} className="gall-card">
-                <img src={src} alt={`Ajumma ${(i % GALLERY.length) + 1}`} loading="lazy"/>
-                <div className="gall-shine"/>
+                <img src={src} alt={`Ajumma ${(i % GALLERY.length) + 1}`} loading="lazy" />
+                <div className="gall-shine" />
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="container" style={{textAlign:"center", marginTop:"2.5rem"}}>
+      <div className="container" style={{ textAlign: "center", marginTop: "2.5rem" }}>
         <a
           href="https://www.instagram.com/ajummaoficial"
           target="_blank" rel="noreferrer"
