@@ -1,12 +1,9 @@
-/* ═════════════════════════════════════════════════════
-   RESERVATION — calendar tab layout
-═════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   RESERVATION — calendar layout + custom form fields
+═══════════════════════════════════════════════════════ */
 
-/* ── WA tab wrapper ────────────────────────────────── */
-.res-wa-wrap {
-  max-width: 680px;
-  margin: 0 auto 2.5rem;
-}
+/* ── WA wrapper ────────────────────────────────────── */
+.res-wa-wrap { max-width: 680px; margin: 0 auto 2.5rem; }
 .res-wa-form {
   background: rgba(255,255,255,.04);
   border: 1px solid var(--line);
@@ -17,50 +14,31 @@
   gap: 1rem;
 }
 
-/* ── Calendar tab wrapper ────────────────────────── */
-.res-cal-wrap {
-  margin-bottom: 2.5rem;
-}
-.res-cal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
+/* ── Calendar wrapper ────────────────────────────── */
+.res-cal-wrap  { margin-bottom: 2.5rem; }
+.res-cal-form  { display: flex; flex-direction: column; gap: 1.5rem; }
 
-/* Fila superior: calendario (izq) + horarios (der) */
 .cal-top-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
   align-items: start;
 }
-
 .cal-col-left,
-.cal-col-right {
-  display: flex;
-  flex-direction: column;
-  gap: .6rem;
-}
+.cal-col-right { display: flex; flex-direction: column; gap: .6rem; }
 
-/* Placeholder cuando aún no se eligió fecha */
 .time-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: .8rem;
-  min-height: 200px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: .8rem; min-height: 200px;
   background: rgba(255,255,255,.03);
   border: 1.5px dashed var(--line);
-  border-radius: 20px;
-  color: var(--muted);
-  text-align: center;
-  padding: 1.5rem;
+  border-radius: 20px; color: var(--muted);
+  text-align: center; padding: 1.5rem;
 }
 .time-placeholder span { font-size: 2.5rem; opacity: .4; }
-.time-placeholder p { font-size: .85rem; max-width: 180px; }
+.time-placeholder p    { font-size: .85rem; max-width: 180px; }
 
-/* Fila inferior: datos del usuario */
 .cal-form-row {
   background: rgba(255,255,255,.035);
   border: 1px solid var(--line);
@@ -72,13 +50,9 @@
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: none; }
 }
-.cal-form-inner {
-  display: flex;
-  flex-direction: column;
-  gap: .9rem;
-}
+.cal-form-inner { display: flex; flex-direction: column; gap: .9rem; }
 
-/* ── Mini Calendar ───────────────────────────────── */
+/* ── Mini Calendar ────────────────────────────────── */
 .mc-label {
   font-size: .76rem;
   text-transform: uppercase;
@@ -94,175 +68,236 @@
   user-select: none;
 }
 .mc-cal-head {
-  display: flex;
-  align-items: center;
+  display: flex; align-items: center;
   justify-content: space-between;
   margin-bottom: .9rem;
 }
 .mc-month {
   font-family: "Cormorant Garamond", serif;
-  font-size: 1.05rem;
-  color: var(--text);
-  font-weight: 700;
+  font-size: 1.05rem; color: var(--text); font-weight: 700;
 }
 .mc-nav {
   background: rgba(255,255,255,.06);
   border: 1px solid var(--line);
-  border-radius: 50%;
-  width: 30px; height: 30px;
-  color: var(--text); font-size: 1.1rem;
-  cursor: pointer;
+  border-radius: 50%; width: 30px; height: 30px;
+  color: var(--text); font-size: 1.1rem; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: .16s; line-height: 1;
+  transition: .16s;
 }
 .mc-nav:hover { background: var(--red); border-color: var(--red); color: #fff; }
 .mc-days-header {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  display: grid; grid-template-columns: repeat(7, 1fr);
   margin-bottom: .35rem;
 }
 .mc-days-header span {
-  text-align: center;
-  font-size: .63rem;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--muted);
-  padding: .25rem 0;
+  text-align: center; font-size: .63rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--muted); padding: .25rem 0;
 }
-.mc-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-}
+.mc-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
 .mc-day {
-  aspect-ratio: 1;
-  border-radius: 9px;
-  border: 1.5px solid transparent;
-  background: transparent;
-  color: var(--text);
-  font-size: .82rem;
-  cursor: pointer;
-  transition: .14s;
-  display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 1; border-radius: 9px;
+  border: 1.5px solid transparent; background: transparent;
+  color: var(--text); font-size: .82rem; cursor: pointer;
+  transition: .14s; display: flex; align-items: center; justify-content: center;
   font-weight: 500;
 }
-.mc-day:hover:not(.past) {
-  background: rgba(192,57,43,.18);
-  border-color: var(--red);
-}
+.mc-day:hover:not(.past) { background: rgba(192,57,43,.18); border-color: var(--red); }
 .mc-day.sel {
-  background: var(--red);
-  border-color: var(--red);
-  color: #fff;
-  font-weight: 700;
-  box-shadow: 0 3px 12px rgba(192,57,43,.45);
+  background: var(--red); border-color: var(--red); color: #fff;
+  font-weight: 700; box-shadow: 0 3px 12px rgba(192,57,43,.45);
 }
 .mc-day.past { opacity: .22; cursor: not-allowed; }
 .mc-selected-label {
-  font-size: .8rem;
-  color: var(--muted);
+  font-size: .8rem; color: var(--muted);
   padding: .35rem .7rem;
-  background: rgba(192,57,43,.07);
-  border: 1px solid rgba(192,57,43,.18);
-  border-radius: 10px;
-  margin: 0;
+  background: rgba(192,57,43,.07); border: 1px solid rgba(192,57,43,.18);
+  border-radius: 10px; margin: 0;
 }
 .mc-selected-label strong { color: var(--text); }
 
-/* ── Time slots ──────────────────────────────────── */
-.time-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: .38rem;
-}
+/* ── Time slots ────────────────────────────────────── */
+.time-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .38rem; }
 .time-slot {
-  padding: .48rem .2rem;
-  border-radius: 9px;
-  border: 1.5px solid var(--line);
-  background: rgba(255,255,255,.03);
-  color: var(--muted);
-  font-size: .78rem;
-  cursor: pointer;
-  transition: .14s;
-  text-align: center;
-  font-weight: 500;
+  padding: .48rem .2rem; border-radius: 9px;
+  border: 1.5px solid var(--line); background: rgba(255,255,255,.03);
+  color: var(--muted); font-size: .78rem; cursor: pointer;
+  transition: .14s; text-align: center; font-weight: 500;
 }
-.time-slot:hover {
-  border-color: var(--red);
-  background: rgba(192,57,43,.1);
-  color: var(--text);
-}
+.time-slot:hover { border-color: var(--red); background: rgba(192,57,43,.1); color: var(--text); }
 .time-slot.sel {
-  background: var(--red);
-  border-color: var(--red);
-  color: #fff;
-  font-weight: 700;
-  box-shadow: 0 3px 10px rgba(192,57,43,.4);
+  background: var(--red); border-color: var(--red); color: #fff;
+  font-weight: 700; box-shadow: 0 3px 10px rgba(192,57,43,.4);
 }
 
-/* ── Resumen ─────────────────────────────────────── */
+/* ── Resumen dorado ───────────────────────────────── */
 .res-summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
+  display: flex; flex-wrap: wrap; gap: .5rem;
   padding: .8rem 1rem;
-  background: rgba(201,164,74,.06);
-  border: 1px solid rgba(201,164,74,.2);
+  background: rgba(201,164,74,.06); border: 1px solid rgba(201,164,74,.2);
   border-radius: 12px;
 }
-.res-summary span {
-  font-size: .82rem;
-  color: var(--muted);
-}
+.res-summary span { font-size: .82rem; color: var(--muted); }
 
-/* ── Info bar (debajo de ambos tabs) ──────────────── */
+/* ── Info bar ───────────────────────────────────────── */
 .res-info-bar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 1rem;
   padding: 1.4rem 2rem;
-  background: rgba(255,255,255,.035);
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  margin-top: 2rem;
+  background: rgba(255,255,255,.035); border: 1px solid var(--line);
+  border-radius: 24px; margin-top: 2rem;
 }
-.rib-item {
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  flex: 1;
-  min-width: 160px;
-}
+.rib-item { display: flex; align-items: center; gap: .75rem; flex: 1; min-width: 160px; }
 .rib-item > span { font-size: 1.5rem; flex-shrink: 0; }
 .rib-item strong { display: block; font-size: .88rem; color: var(--text); }
 .rib-item p { font-size: .78rem; color: var(--muted); margin: 0; line-height: 1.4; }
-.rib-divider {
-  width: 1px;
-  align-self: stretch;
-  background: var(--line);
-  flex-shrink: 0;
-}
-.rib-btns {
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-  align-items: flex-start;
-  min-width: 150px;
+.rib-divider { width: 1px; align-self: stretch; background: var(--line); flex-shrink: 0; }
+.rib-btns { display: flex; flex-direction: column; gap: .5rem; align-items: flex-start; min-width: 150px; }
+
+/* ════════════════════════════════════════════════════════
+   CUSTOM FORM FIELDS — inputs / selects / textarea
+   Scoped a .reservation para no afectar otras secciones
+════════════════════════════════════════════════════════ */
+
+/* Label */
+.reservation .field > label {
+  display: block;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--muted);
+  margin-bottom: .38rem;
+  font-weight: 600;
 }
 
-/* ── Responsive ────────────────────────────────────── */
+/* Inputs & textarea base */
+.reservation .field input,
+.reservation .field textarea {
+  width: 100%;
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  border: 1.5px solid rgba(255,255,255,.1);
+  border-radius: 14px;
+  padding: .82rem 1rem;
+  outline: none;
+  font-family: inherit;
+  font-size: .92rem;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+  appearance: none;
+  -webkit-appearance: none;
+  line-height: 1.5;
+  /* fix de color en inputs nativos (date, time) */
+  color-scheme: dark;
+}
+.reservation .field input::placeholder,
+.reservation .field textarea::placeholder {
+  color: rgba(168,152,128,.45);
+}
+.reservation .field input:focus,
+.reservation .field textarea:focus {
+  border-color: var(--red);
+  background: rgba(255,255,255,.09);
+  box-shadow: 0 0 0 3px rgba(192,57,43,.15);
+}
+.reservation .field input:hover:not(:focus),
+.reservation .field textarea:hover:not(:focus) {
+  border-color: rgba(192,57,43,.4);
+}
+
+/* Textarea */
+.reservation .field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ── Select personalizado ───────────────────────────────
+   Flecha nativa ocultada, reemplazada por SVG rojo     */
+.reservation .field {
+  position: relative;
+}
+.reservation .field select {
+  width: 100%;
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  border: 1.5px solid rgba(255,255,255,.1);
+  border-radius: 14px;
+  /* padding-right grande para que el texto no tape la flecha */
+  padding: .82rem 2.8rem .82rem 1rem;
+  outline: none;
+  font-family: inherit;
+  font-size: .92rem;
+  cursor: pointer;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+  /* Quitar flecha nativa en todos los navegadores */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* Flecha SVG roja */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c0392b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right .9rem center;
+  background-size: 16px 16px;
+  /* mantener el bg con la imagen y el color */
+  background-color: rgba(255,255,255,.06);
+  color-scheme: dark;
+  line-height: 1.5;
+}
+.reservation .field select:hover:not(:focus) {
+  border-color: rgba(192,57,43,.45);
+  background-color: rgba(255,255,255,.09);
+}
+.reservation .field select:focus {
+  border-color: var(--red);
+  background-color: rgba(255,255,255,.09);
+  box-shadow: 0 0 0 3px rgba(192,57,43,.15);
+}
+/* Opciones en el dropdown nativo */
+.reservation .field select option {
+  background: #1a1310;
+  color: var(--text);
+  font-size: .9rem;
+}
+
+/* ── form-row ─────────────────────────────────────────── */
+.reservation .form-row { display: flex; gap: 1rem; }
+.reservation .form-row .field { flex: 1; }
+
+/* ── form-hint ───────────────────────────────────────── */
+.reservation .form-hint {
+  font-size: .76rem; color: var(--muted);
+  text-align: center; margin-top: -.2rem;
+}
+
+/* ── form-ok ─────────────────────────────────────────── */
+.reservation .form-ok {
+  text-align: center; padding: 3rem 1.5rem;
+  background: rgba(255,255,255,.04); border: 1px solid var(--line);
+  border-radius: 28px;
+}
+.reservation .form-ok span { font-size: 3.5rem; display: block; margin-bottom: 1rem; }
+.reservation .form-ok h3 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.6rem; margin-bottom: .5rem; color: var(--text);
+}
+.reservation .form-ok p { font-size: .9rem; color: var(--muted); }
+
+/* ── btn-full ────────────────────────────────═───────── */
+.reservation .btn-full {
+  width: 100%; justify-content: center;
+  font-size: .95rem; padding: .95rem 1.5rem; margin-top: .2rem;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
 @media (max-width: 900px) {
-  .cal-top-row {
-    grid-template-columns: 1fr;
-  }
+  .cal-top-row      { grid-template-columns: 1fr; }
   .time-placeholder { min-height: 80px; }
 }
 @media (max-width: 600px) {
-  .res-wa-form  { padding: 1.2rem; }
-  .cal-form-row { padding: 1.2rem; }
-  .time-grid    { grid-template-columns: repeat(4, 1fr); }
-  .res-info-bar { flex-direction: column; align-items: flex-start; }
-  .rib-divider  { width: 100%; height: 1px; align-self: auto; }
-  .rib-btns     { flex-direction: row; flex-wrap: wrap; }
+  .res-wa-form              { padding: 1.2rem; }
+  .cal-form-row             { padding: 1.2rem; }
+  .time-grid                { grid-template-columns: repeat(4, 1fr); }
+  .res-info-bar             { flex-direction: column; align-items: flex-start; }
+  .rib-divider              { width: 100%; height: 1px; align-self: auto; }
+  .rib-btns                 { flex-direction: row; flex-wrap: wrap; }
+  .reservation .form-row    { flex-direction: column; }
 }
