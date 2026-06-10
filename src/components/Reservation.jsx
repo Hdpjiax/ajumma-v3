@@ -226,14 +226,14 @@ export default function Reservation() {
                     <DateInput
                       value={wa.date}
                       onChange={e => upWa("date", e.target.value)}
-                      required
+                      required style={{height:"3rem"}}
                     />
                   </div>
                   <div className="field"><label>Hora</label>
                     <TimeInput
                       value={wa.time}
                       onChange={e => upWa("time", e.target.value)}
-                      required
+                      required style={{height:"3rem"}}
                     />
                   </div>
                 </div>
