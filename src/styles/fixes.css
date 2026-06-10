@@ -7,10 +7,9 @@ html, body {
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
 }
-
 .page { opacity: 1 !important; visibility: visible !important; }
 
-/* ─── NAVBAR ────────────────────────────────────────────────── */
+/* ─── NAVBAR ────────────────────────────────────────── */
 @media (max-width: 768px) {
   .nav {
     display: grid;
@@ -22,48 +21,36 @@ html, body {
   .nav-logo  { grid-column: 1; grid-row: 1; }
   .burger {
     display: flex !important;
-    grid-column: 2;
-    grid-row: 1;
-    position: static;
-    margin-left: auto;
+    grid-column: 2; grid-row: 1;
+    position: static; margin-left: auto;
   }
   .nav-cta    { display: none; }
   .nav-social { display: none; }
   .nav-links {
     position: fixed;
-    top: var(--nav);
-    left: 0; right: 0;
+    top: var(--nav); left: 0; right: 0;
     flex-direction: column;
     padding: 1.5rem 1rem;
     background: rgba(8,6,4,.97);
     border-bottom: 1px solid var(--line);
     backdrop-filter: blur(16px);
-    opacity: 0;
-    pointer-events: none;
+    opacity: 0; pointer-events: none;
     transform: translateY(-8px);
     transition: .28s ease;
-    z-index: 99;
-    gap: 0;
+    z-index: 99; gap: 0;
   }
-  .nav-links.open {
-    opacity: 1;
-    pointer-events: auto;
-    transform: none;
-  }
+  .nav-links.open { opacity: 1; pointer-events: auto; transform: none; }
   .nav-links a {
     padding: .85rem 1rem;
     border-bottom: 1px solid var(--line);
-    width: 100%;
-    font-size: 1rem;
+    width: 100%; font-size: 1rem;
   }
 }
 
-/* ─── HERO — social proof fix ───────────────────────────────── */
+/* ─── HERO ────────────────────────────────────────── */
 .hero-social-proof {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  padding-top: 1.8rem;
+  display: flex; align-items: center;
+  gap: 1.2rem; padding-top: 1.8rem;
   border-top: 1px solid var(--line);
   flex-wrap: wrap;
 }
@@ -71,81 +58,49 @@ html, body {
 .social-proof-text strong {
   font-size: 1.6rem;
   font-family: "Cormorant Garamond", serif;
-  color: var(--gold);
-  line-height: 1;
+  color: var(--gold); line-height: 1;
 }
 .social-proof-text p { font-size: .82rem; color: var(--muted); line-height: 1.4; }
-
 @media (max-width: 768px) {
   .hero-h1 { font-size: clamp(3rem, 12vw, 6rem); }
   .hero-social-proof { padding-top: 1.2rem; }
   .social-proof-text strong { font-size: 1.4rem; }
 }
 
-/* ─── RESERVATION — layout fix mobile ───────────────────────── */
+/* ─── RESERVATION ────────────────────────────────────── */
 @media (max-width: 768px) {
   .res-grid { grid-template-columns: 1fr !important; }
   .res-right { order: 1; }
   .res-left  { order: 2; }
 }
 
-/* ─── CALENDLY — popup CTA box ────────────────────────────── */
-.calendly-section {
+/* Calendly form header badge */
+.cal-form-header {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  max-width: 800px;
-  margin: 0 auto;
-}
-.calendly-cta-box {
-  background: #100d0a;
-  border: 1px solid var(--line);
-  border-radius: 28px;
-  padding: 3rem 2rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
-  box-shadow: 0 24px 60px rgba(0,0,0,.5);
+  padding: 1.2rem 1.4rem;
+  background: rgba(192,57,43,.08);
+  border: 1px solid rgba(192,57,43,.2);
+  border-radius: 18px;
+  margin-bottom: .5rem;
 }
-.cal-icon { font-size: 3.5rem; }
-.calendly-cta-box h3 {
+.cal-form-icon { font-size: 2rem; flex-shrink: 0; margin-top: .15rem; }
+.cal-form-header h3 {
   font-family: "Cormorant Garamond", serif;
-  font-size: 2rem;
+  font-size: 1.4rem;
   color: var(--text);
+  margin: 0 0 .25rem;
+  line-height: 1.2;
 }
-.calendly-cta-box p { font-size: .95rem; color: var(--muted); max-width: 380px; }
-.btn-cal-open {
-  font-size: 1rem;
-  padding: 1rem 2.5rem;
-  margin-top: .5rem;
-}
-.btn-cal-open:disabled { opacity: .6; cursor: wait; }
-.cal-fallback {
+.cal-form-header p {
   font-size: .82rem;
   color: var(--muted);
-  margin-top: -.2rem;
-}
-.cal-fallback:hover { color: var(--red); }
-
-.calendly-info-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 1.5rem;
-  background: rgba(255,255,255,.03);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 1.5rem;
-}
-.res-contact-row { display: flex; flex-direction: column; gap: .7rem; }
-
-@media (max-width: 768px) {
-  .calendly-cta-box { padding: 2rem 1.2rem; }
-  .calendly-info-row { grid-template-columns: 1fr; }
+  margin: 0;
+  line-height: 1.45;
 }
 
-/* ─── CHATBOT — visual overhaul ─────────────────────────────── */
+/* ─── CHATBOT ────────────────────────────────────────── */
 .fab {
   position: fixed;
   bottom: 1.5rem; right: 1.5rem;
@@ -164,8 +119,7 @@ html, body {
 .fab-icon  { font-size: 1.4rem; line-height: 1; }
 .fab-dot {
   position: absolute; top: 6px; right: 6px;
-  width: 11px; height: 11px;
-  border-radius: 50%;
+  width: 11px; height: 11px; border-radius: 50%;
   background: #2ecc71;
   border: 2px solid #0a0806;
   animation: pulse-dot 2s ease infinite;
@@ -181,8 +135,7 @@ html, body {
   max-height: min(560px, calc(100vh - 8rem));
   background: #0e0b09;
   border: 1px solid rgba(255,255,255,.1);
-  border-radius: 28px;
-  z-index: 200;
+  border-radius: 28px; z-index: 200;
   display: flex; flex-direction: column;
   box-shadow: 0 32px 80px rgba(0,0,0,.75), 0 0 0 1px rgba(192,57,43,.12);
   overflow: hidden;
@@ -233,7 +186,7 @@ html, body {
   from { opacity:0; transform: translateY(6px); }
   to   { opacity:1; transform: none; }
 }
-.chat-msg.bot  {
+.chat-msg.bot {
   background: rgba(255,255,255,.07);
   border-radius: 4px 18px 18px 18px; align-self: flex-start;
   border: 1px solid rgba(255,255,255,.06);
